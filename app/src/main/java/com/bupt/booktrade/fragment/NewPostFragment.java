@@ -8,16 +8,16 @@ import android.view.ViewGroup;
 
 import com.bupt.booktrade.R;
 
-public class CommunityFragment extends Fragment {
+public class NewPostFragment extends Fragment {
 
-    public CommunityFragment() {
+    public NewPostFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_community, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_new_post, container, false);
 
         return rootView;
     }

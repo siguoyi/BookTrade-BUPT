@@ -7,6 +7,7 @@ import android.app.FragmentManager;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
@@ -15,15 +16,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.bupt.booktrade.adapter.NavDrawerListAdapter;
-import com.bupt.booktrade.fragment.CommunityFragment;
-import com.bupt.booktrade.fragment.FindPeopleFragment;
-import com.bupt.booktrade.fragment.HomeFragment;
-import com.bupt.booktrade.fragment.PagesFragment;
-import com.bupt.booktrade.fragment.PhotosFragment;
-import com.bupt.booktrade.fragment.WhatsHotFragment;
+import com.bupt.booktrade.fragment.MessageFragment;
+import com.bupt.booktrade.fragment.NewPostFragment;
+import com.bupt.booktrade.fragment.PersonalHomeFragment;
+import com.bupt.booktrade.fragment.PostsListFragment;
+import com.bupt.booktrade.fragment.SettingFragment;
 import com.bupt.booktrade.fragment.model.NavDrawerItem;
+import com.bupt.booktrade.utils.ToastUtils;
 
 import java.util.ArrayList;
 
@@ -41,10 +43,8 @@ public class MainActivity extends Activity {
 
     // slide menu items
     private String[] navMenuTitles;
-    private TypedArray navMenuIcons;
-
-    private ArrayList<NavDrawerItem> navDrawerItems;
-    private NavDrawerListAdapter adapter;
+    private int drawerPosition = 1;
+    private boolean doubleBackToExitPressedOnce = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,30 +57,24 @@ public class MainActivity extends Activity {
         navMenuTitles = getResources().getStringArray(R.array.nav_drawer_items);
 
         // nav drawer icons from resources
-        navMenuIcons = getResources()
+        TypedArray navMenuIcons = getResources()
                 .obtainTypedArray(R.array.nav_drawer_icons);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.list_slidermenu);
 
-        navDrawerItems = new ArrayList<NavDrawerItem>();
+        ArrayList<NavDrawerItem> navDrawerItems = new ArrayList<NavDrawerItem>();
 
-        // adding nav drawer items to array
-        // Home
+        // Peersonal Home
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[0], navMenuIcons.getResourceId(0, -1)));
-        // Find People
+        // Posts List
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1), true, "5"));
-        // Photos
+        // New Post
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1), true, "10"));
-        // Communities, Will add a counter here
+        // Message
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1), true, "22"));
-        // Pages
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1), true, "30"));
-        // What's hot, We  will add a counter here
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[5], navMenuIcons.getResourceId(5, -1), true, "50+"));
-
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[6], navMenuIcons.getResourceId(5, -1)));
-
+        // Setting
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1), true, "22"));
 
         // Recycle the typed array
         navMenuIcons.recycle();
@@ -88,7 +82,7 @@ public class MainActivity extends Activity {
         mDrawerList.setOnItemClickListener(new SlideMenuClickListener());
 
         // setting the nav drawer list adapter
-        adapter = new NavDrawerListAdapter(getApplicationContext(),
+        NavDrawerListAdapter adapter = new NavDrawerListAdapter(getApplicationContext(),
                 navDrawerItems);
         mDrawerList.setAdapter(adapter);
 
@@ -117,20 +111,36 @@ public class MainActivity extends Activity {
 
         if (savedInstanceState == null) {
             // on first time display view for first nav item
-            displayView(1);
+            displayView(drawerPosition);
         }
     }
 
-    /**
-     * Slide menu item click listener
-     */
-    private class SlideMenuClickListener implements
-            ListView.OnItemClickListener {
-        public void onItemClick(AdapterView<?> parent, View view, int position,
-                                long id) {
-            // display view for selected nav drawer item
-            displayView(position);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        doubleBackToExitPressedOnce = false;
+        displayView(drawerPosition);
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            ToastUtils.clearToast();
+            finish();
+            return;
         }
+
+        this.doubleBackToExitPressedOnce = true;
+        ToastUtils.showToast(this, R.string.one_more_back, Toast.LENGTH_SHORT);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce=false;
+            }
+        }, 2000);
     }
 
     @Override
@@ -173,22 +183,19 @@ public class MainActivity extends Activity {
         Fragment fragment = null;
         switch (position) {
             case 0:
-                fragment = new HomeFragment();
+                fragment = new PersonalHomeFragment();
                 break;
             case 1:
-                fragment = new FindPeopleFragment();
+                fragment = new PostsListFragment();
                 break;
             case 2:
-                fragment = new PhotosFragment();
+                fragment = new NewPostFragment();
                 break;
             case 3:
-                fragment = new CommunityFragment();
+                fragment = new MessageFragment();
                 break;
             case 4:
-                fragment = new PagesFragment();
-                break;
-            case 5:
-                fragment = new WhatsHotFragment();
+                fragment = new SettingFragment();
                 break;
 
             default:
@@ -234,6 +241,19 @@ public class MainActivity extends Activity {
         super.onConfigurationChanged(newConfig);
         // Pass any configuration change to the drawer toggls
         mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    /**
+     * Slide menu item click listener
+     */
+    private class SlideMenuClickListener implements
+            ListView.OnItemClickListener {
+        public void onItemClick(AdapterView<?> parent, View view, int position,
+                                long id) {
+            // display view for selected nav drawer item
+            displayView(position);
+            drawerPosition = position;
+        }
     }
 
 }
