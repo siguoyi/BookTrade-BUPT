@@ -4,7 +4,6 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -27,7 +26,7 @@ public class PostsListFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_card_layout, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_posts_list, container, false);
         cardsList = (ListView) rootView.findViewById(R.id.cards_list);
         setupList();
         return rootView;
@@ -42,12 +41,12 @@ public class PostsListFragment extends Fragment {
         ArrayList<String> items = new ArrayList<String>();
 
         for (int i = 0; i < 50; i++) {
-            items.add(i, "Text for List Item " + i);
+            items.add(i, "[出]几本书 " + i);
         }
 
-        return new CardsAdapter(getActivity(), items, new ListItemButtonClickListener());
+        return new CardsAdapter(getActivity(), items, new ListItemClickListener());
     }
-
+/*
     private final class ListItemButtonClickListener implements OnClickListener {
         @Override
         public void onClick(View v) {
@@ -62,7 +61,7 @@ public class PostsListFragment extends Fragment {
             }
         }
     }
-
+*/
     private final class ListItemClickListener implements OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
