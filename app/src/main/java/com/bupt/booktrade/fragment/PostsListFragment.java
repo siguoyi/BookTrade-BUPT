@@ -66,7 +66,7 @@ public class PostsListFragment extends Fragment {
     private final class ListItemClickListener implements OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Toast.makeText(getActivity(), "Clicked on List Item " + position, Toast.LENGTH_SHORT).show();
+            ToastUtils.showToast(getActivity(), "Clicked on List Item " + position, Toast.LENGTH_SHORT);
         }
     }
 

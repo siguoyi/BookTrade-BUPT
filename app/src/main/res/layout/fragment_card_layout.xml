@@ -10,8 +10,9 @@
         android:layout_height="wrap_content"
         android:clipToPadding="false"
         android:divider="@android:color/transparent"
-        android:dividerHeight="5dp"
-        android:padding="8dp"
+        android:dividerHeight="3dp"
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
         android:scrollbarStyle="outsideOverlay"
         tools:listitem="@layout/list_item_card" />
 
