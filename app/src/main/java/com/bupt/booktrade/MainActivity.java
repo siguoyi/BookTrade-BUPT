@@ -31,6 +31,8 @@ import java.util.ArrayList;
 
 
 public class MainActivity extends Activity {
+    private final static String TAG = "MainActivity:  ";
+    private final boolean D = true;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -43,14 +45,22 @@ public class MainActivity extends Activity {
 
     // slide menu items
     private String[] navMenuTitles;
-    private int drawerPosition = 0;
+    private int drawerPosition = 1;
     private boolean doubleBackToExitPressedOnce = false;
+
+    private Fragment fragment = null;
+    private PersonalHomeFragment personalHomeFragment = new PersonalHomeFragment();
+    private PostsListFragment postsListFragment = new PostsListFragment();
+    private NewPostFragment newPostFragment = new NewPostFragment();
+    private MessageFragment messageFragment = new MessageFragment();
+    private SettingFragment settingFragment = new SettingFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if (D) Log.d(TAG, "onCreate");
         mTitle = mDrawerTitle = getTitle();
 
         // load slide menu items
@@ -181,22 +191,22 @@ public class MainActivity extends Activity {
      */
     private void displayView(int position) {
         // update the main content by replacing fragments
-        Fragment fragment = null;
+
         switch (position) {
             case 0:
-                fragment = new PersonalHomeFragment();
+                fragment = personalHomeFragment;
                 break;
             case 1:
-                fragment = new PostsListFragment();
+                fragment = postsListFragment;
                 break;
             case 2:
-                fragment = new NewPostFragment();
+                fragment = newPostFragment;
                 break;
             case 3:
-                fragment = new MessageFragment();
+                fragment = messageFragment;
                 break;
             case 4:
-                fragment = new SettingFragment();
+                fragment = settingFragment;
                 break;
 
             default:

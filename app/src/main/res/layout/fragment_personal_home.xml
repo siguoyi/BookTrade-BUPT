@@ -27,10 +27,10 @@
                     android:id="@+id/person_home_avatar"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
-                    android:layout_alignParentLeft="true"
-                    android:layout_marginLeft="10dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="10dp"
                     android:layout_marginTop="100dp"
-                    android:src="@drawable/avatar" />
+                    android:src="@drawable/avatar_default_m" />
 
                 <TextView
                     android:id="@+id/person_home_username"
@@ -38,9 +38,9 @@
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@id/person_home_avatar"
                     android:layout_marginBottom="40dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_toRightOf="@id/person_home_avatar"
-                    android:text="Demievil"
+                    android:layout_marginRight="5dp"
+                    android:layout_toLeftOf="@id/person_home_avatar"
+                    android:text="Me"
                     android:textColor="@color/white"
                     android:textSize="18sp" />
             </RelativeLayout>

@@ -17,7 +17,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
         android:contentDescription="@string/desc_list_item_icon"
-        android:src="@drawable/avatar"
+        android:src="@drawable/avatar_default_m"
         android:layout_centerVertical="true"/>
 
     <TextView
@@ -30,7 +30,7 @@
         android:textColor="@color/white"
         android:gravity="center_vertical"
         android:paddingRight="40dp"
-        android:text="Demievil"/>
+        android:text="Me"/>
     <View
         android:layout_width="match_parent"
         android:layout_height="0.8dp"
