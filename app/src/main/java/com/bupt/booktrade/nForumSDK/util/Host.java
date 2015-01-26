@@ -27,7 +27,7 @@ public class Host {
 	
 	public static final String GUEST_USERNAME = "guest";
 	public static final String GUEST_PASSWORD = "";
-	
+	public static final String APP_KEY = "91845df51583867c";
 	public static final String RETURN_FORMAT_JSON = ".json";
 
 }

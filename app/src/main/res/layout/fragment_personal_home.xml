@@ -87,8 +87,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_gravity="left|center_vertical"
-                    android:layout_weight="1"
-                    android:text="岩痞"
+                    android:layout_weight="2"
+                    android:text="Bear"
                     android:textSize="16sp"
                     />
             </TableRow>
@@ -116,7 +116,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_gravity="left|center_vertical"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:text="男生"
                     android:textSize="16sp"
                     />
@@ -145,7 +145,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_gravity="left|center_vertical"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:text="射手座"
                     android:textSize="16sp"
                     />
@@ -174,7 +174,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_gravity="left|center_vertical"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:text="123456789"
                     android:textSize="16sp"
                     />
@@ -203,7 +203,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_gravity="left|center_vertical"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:text="123456789@123.com"
                     android:textSize="16sp"
                     />
@@ -232,7 +232,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_gravity="left|center_vertical"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:text="demievil.github.io"
                     android:textSize="16sp"
                     />
@@ -281,7 +281,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_gravity="left|center_vertical"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:text="用户"
                     android:textSize="16sp"
                     />
@@ -310,7 +310,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_gravity="left|center_vertical"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:text="783"
                     android:textSize="16sp"
                     />
@@ -339,7 +339,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_gravity="left|center_vertical"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:text="10282"
                     android:textSize="16sp"
                     />
@@ -368,7 +368,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_gravity="left|center_vertical"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:text="在线"
                     android:textSize="16sp"
                     />
@@ -397,7 +397,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_gravity="left|center_vertical"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:text="2010.10.31"
                     android:textSize="16sp"
                     />
@@ -409,7 +409,7 @@
                     android:layout_gravity="left|center_vertical"
                     android:layout_marginLeft="10dp"
                     android:layout_weight="1"
-                    android:text="上次登录时间"
+                    android:text="上次登录"
                     android:textSize="16sp"/>
                 <TextView
                     android:layout_width="wrap_content"
@@ -426,7 +426,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_gravity="left|center_vertical"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:text="2015.1.19"
                     android:textSize="16sp"
                     />
@@ -455,7 +455,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_gravity="left|center_vertical"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:text="000.000.000.000"
                     android:textSize="16sp"
                     />
