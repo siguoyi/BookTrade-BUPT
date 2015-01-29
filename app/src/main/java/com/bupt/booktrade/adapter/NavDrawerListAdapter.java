@@ -17,7 +17,6 @@ import java.util.ArrayList;
 
 public class NavDrawerListAdapter extends BaseAdapter {
 
-    private final int View_TYPE = 3;
     private final int TYPE_ME = 0;
     private final int TYPE_LIST = 1;
     private Context context;

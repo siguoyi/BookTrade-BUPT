@@ -10,9 +10,6 @@ import com.bupt.booktrade.R;
 
 public class MessageFragment extends Fragment {
 
-    public MessageFragment() {
-    }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

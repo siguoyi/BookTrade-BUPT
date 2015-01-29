@@ -19,16 +19,19 @@ import java.util.ArrayList;
 public class PostsListFragment extends Fragment {
 
     private ListView cardsList;
-
-    public PostsListFragment() {
-        // nop
-    }
+    private View rootView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_posts_list, container, false);
-        cardsList = (ListView) rootView.findViewById(R.id.cards_list);
-        setupList();
+        if (rootView == null) {
+            rootView = inflater.inflate(R.layout.fragment_posts_list, container, false);
+            cardsList = (ListView) rootView.findViewById(R.id.cards_list);
+            setupList();
+        }
+        ViewGroup parent = (ViewGroup) rootView.getParent();
+        if (parent != null) {
+            parent.removeView(rootView);
+        }
         return rootView;
     }
 
@@ -38,30 +41,31 @@ public class PostsListFragment extends Fragment {
     }
 
     private CardsAdapter createAdapter() {
-        ArrayList<String> items = new ArrayList<String>();
+        ArrayList<String> items = new ArrayList<>();
 
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 500; i++) {
             items.add(i, "[出]几本书 " + i);
         }
 
         return new CardsAdapter(getActivity(), items, new ListItemClickListener());
     }
-/*
-    private final class ListItemButtonClickListener implements OnClickListener {
-        @Override
-        public void onClick(View v) {
-            for (int i = cardsList.getFirstVisiblePosition(); i <= cardsList.getLastVisiblePosition(); i++) {
-                if (v == cardsList.getChildAt(i - cardsList.getFirstVisiblePosition()).findViewById(R.id.list_item_card_button_1)) {
-                    // PERFORM AN ACTION WITH THE ITEM AT POSITION i
-                    ToastUtils.showToast(getActivity(), "Left:" + i, Toast.LENGTH_SHORT);
-                } else if (v == cardsList.getChildAt(i - cardsList.getFirstVisiblePosition()).findViewById(R.id.list_item_card_button_2)) {
-                    // PERFORM ANOTHER ACTION WITH THE ITEM AT POSITION i
-                    ToastUtils.showToast(getActivity(), "Right:" + i, Toast.LENGTH_SHORT);
+
+    /*
+        private final class ListItemButtonClickListener implements OnClickListener {
+            @Override
+            public void onClick(View v) {
+                for (int i = cardsList.getFirstVisiblePosition(); i <= cardsList.getLastVisiblePosition(); i++) {
+                    if (v == cardsList.getChildAt(i - cardsList.getFirstVisiblePosition()).findViewById(R.id.list_item_card_button_1)) {
+                        // PERFORM AN ACTION WITH THE ITEM AT POSITION i
+                        ToastUtils.showToast(getActivity(), "Left:" + i, Toast.LENGTH_SHORT);
+                    } else if (v == cardsList.getChildAt(i - cardsList.getFirstVisiblePosition()).findViewById(R.id.list_item_card_button_2)) {
+                        // PERFORM ANOTHER ACTION WITH THE ITEM AT POSITION i
+                        ToastUtils.showToast(getActivity(), "Right:" + i, Toast.LENGTH_SHORT);
+                    }
                 }
             }
         }
-    }
-*/
+    */
     private final class ListItemClickListener implements OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

@@ -19,6 +19,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.bupt.booktrade.adapter.NavDrawerListAdapter;
+import com.bupt.booktrade.fragment.AboutFragment;
 import com.bupt.booktrade.fragment.MessageFragment;
 import com.bupt.booktrade.fragment.NewPostFragment;
 import com.bupt.booktrade.fragment.PersonalHomeFragment;
@@ -54,6 +55,7 @@ public class MainActivity extends Activity {
     private NewPostFragment newPostFragment = new NewPostFragment();
     private MessageFragment messageFragment = new MessageFragment();
     private SettingFragment settingFragment = new SettingFragment();
+    private AboutFragment aboutFragment = new AboutFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +75,7 @@ public class MainActivity extends Activity {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.list_slidermenu);
 
-        ArrayList<NavDrawerItem> navDrawerItems = new ArrayList<NavDrawerItem>();
+        ArrayList<NavDrawerItem> navDrawerItems = new ArrayList<>();
 
         // Peersonal Home
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[0], navMenuIcons.getResourceId(0, -1)));
@@ -85,7 +87,7 @@ public class MainActivity extends Activity {
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1), true, "22"));
         // Setting
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1)));
-        // Setting
+        // About
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[5], navMenuIcons.getResourceId(5, -1)));
         // Recycle the typed array
         navMenuIcons.recycle();
@@ -100,7 +102,6 @@ public class MainActivity extends Activity {
         // enabling action bar app icon and behaving it as toggle button
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
-
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
                 R.drawable.ic_drawer, //nav menu toggle icon
                 R.string.app_name, // nav drawer open - description for accessibility
@@ -133,25 +134,31 @@ public class MainActivity extends Activity {
         displayView(drawerPosition);
     }
 
-
+    /**
+     * 双击back键退出
+     */
     @Override
     public void onBackPressed() {
-        if (doubleBackToExitPressedOnce) {
-            super.onBackPressed();
-            ToastUtils.clearToast();
-            finish();
-            return;
-        }
 
-        this.doubleBackToExitPressedOnce = true;
-        ToastUtils.showToast(this, R.string.one_more_back, Toast.LENGTH_SHORT);
+            if (mDrawerLayout.isDrawerOpen(mDrawerList)) {
+                mDrawerLayout.closeDrawer(mDrawerList);
+            } else {
+                if (doubleBackToExitPressedOnce) {
+                    super.onBackPressed();
+                    ToastUtils.clearToast();
+                    finish();
+                    return;
+                }
+                this.doubleBackToExitPressedOnce = true;
+                ToastUtils.showToast(this, R.string.one_more_back, Toast.LENGTH_SHORT);
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                doubleBackToExitPressedOnce = false;
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        doubleBackToExitPressedOnce = false;
+                    }
+                }, 2000);
             }
-        }, 2000);
     }
 
     @Override
@@ -208,7 +215,9 @@ public class MainActivity extends Activity {
             case 4:
                 fragment = settingFragment;
                 break;
-
+            case 5:
+                fragment = aboutFragment;
+                break;
             default:
                 break;
         }

@@ -45,16 +45,7 @@
             android:layout_toRightOf="@+id/pic2"
             android:src="@drawable/book3"/>
 
-        <TextView
-            android:id="@+id/fragment_postbar_listview_details"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="2"
-            android:text="萨克都不快接啊苏打绿奥斯卡大军SD卡将加快速度"
-            android:textColor="#545454"
-            android:textSize="14sp"
-            android:visibility="gone" />
+
     </RelativeLayout>
 
     <RelativeLayout

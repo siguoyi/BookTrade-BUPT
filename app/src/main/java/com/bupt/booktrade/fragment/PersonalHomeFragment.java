@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.bupt.booktrade.R;
@@ -27,25 +29,38 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import fr.castorflex.android.circularprogressbar.CircularProgressDrawable;
+
 public class PersonalHomeFragment extends Fragment {
 
     private final static String TAG = "  PersonalHomeFragment: ";
     private final boolean D = true;
-    User user = new User();
+    private User user = new User();
+    private Bitmap bitmap;
     private View rootView;
-    Bitmap bitmap;
+    private ProgressBar mProgressBar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getUserInfo();
+
+        //getUserInfo();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         if (rootView == null) {
+            getUserInfo();
             rootView = inflater.inflate(R.layout.fragment_personal_home, container, false);
+            mProgressBar = (ProgressBar) rootView.findViewById(R.id.progressbar_circular);
+            mProgressBar.setIndeterminateDrawable(new CircularProgressDrawable
+                    .Builder(getActivity())
+                    .colors(getResources().getIntArray(R.array.gplus_colors))
+                    .sweepSpeed(1f)
+                    .strokeWidth(4)
+                    .style(CircularProgressDrawable.Style.ROUNDED)
+                    .build());
         }
 
         ViewGroup parent = (ViewGroup) rootView.getParent();
@@ -61,7 +76,11 @@ public class PersonalHomeFragment extends Fragment {
             @Override
             public void onTaskDone() {
                 //ToastUtils.showToast(getActivity(), userName.getText().toString(), Toast.LENGTH_SHORT);
+                mProgressBar.setVisibility(View.GONE);
+                ScrollView userInfo = (ScrollView) rootView.findViewById(R.id.user_info);
+                userInfo.setVisibility(View.VISIBLE);
                 setUserInfo();
+
             }
         });
         testAsyncTask.execute();
