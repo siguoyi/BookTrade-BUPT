@@ -28,6 +28,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import fr.castorflex.android.circularprogressbar.CircularProgressDrawable;
 
@@ -53,7 +56,7 @@ public class PersonalHomeFragment extends Fragment {
         if (rootView == null) {
             getUserInfo();
             rootView = inflater.inflate(R.layout.fragment_personal_home, container, false);
-            mProgressBar = (ProgressBar) rootView.findViewById(R.id.progressbar_circular);
+            mProgressBar = (ProgressBar) rootView.findViewById(R.id.progressbar_circular_person);
             mProgressBar.setIndeterminateDrawable(new CircularProgressDrawable
                     .Builder(getActivity())
                     .colors(getResources().getIntArray(R.array.gplus_colors))
@@ -71,7 +74,7 @@ public class PersonalHomeFragment extends Fragment {
     }
 
     private void getUserInfo() {
-        getUserInfoTask testAsyncTask = new getUserInfoTask(new FragmentCallback() {
+        GetUserInfoTask testAsyncTask = new GetUserInfoTask(new FragmentCallback() {
 
             @Override
             public void onTaskDone() {
@@ -83,7 +86,15 @@ public class PersonalHomeFragment extends Fragment {
 
             }
         });
-        testAsyncTask.execute();
+        try {
+            testAsyncTask.execute().get(0, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
     }
 
     private void setUserInfo() {
@@ -162,10 +173,13 @@ public class PersonalHomeFragment extends Fragment {
         public void onTaskDone();
     }
 
-    class getUserInfoTask extends AsyncTask<Void, Void, Void> {
+    /**
+     * 在后台加载用户信息，加载完成后更新UI
+     */
+    class GetUserInfoTask extends AsyncTask<Void, Void, Void> {
         private FragmentCallback mFragmentCallback;
 
-        public getUserInfoTask(FragmentCallback fragmentCallback) {
+        public GetUserInfoTask(FragmentCallback fragmentCallback) {
             mFragmentCallback = fragmentCallback;
         }
 

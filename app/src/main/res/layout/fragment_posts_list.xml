@@ -1,8 +1,8 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/lightgrey" >
+    android:background="@color/lightgrey">
 
     <ListView
         android:id="@+id/cards_list"
@@ -16,4 +16,14 @@
         android:scrollbarStyle="outsideOverlay"
         tools:listitem="@layout/list_item_card" />
 
-</LinearLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center">
+
+        <ProgressBar
+            android:id="@+id/progressbar_circular_posts"
+            style="@style/ProgressBar.Horizontal" />
+    </RelativeLayout>
+
+</FrameLayout>

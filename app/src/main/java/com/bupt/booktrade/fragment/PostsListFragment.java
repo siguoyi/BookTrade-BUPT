@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bupt.booktrade.R;
@@ -16,16 +17,26 @@ import com.bupt.booktrade.utils.ToastUtils;
 
 import java.util.ArrayList;
 
+import fr.castorflex.android.circularprogressbar.CircularProgressDrawable;
+
 public class PostsListFragment extends Fragment {
 
     private ListView cardsList;
     private View rootView;
-
+    private ProgressBar mProgressBar;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (rootView == null) {
             rootView = inflater.inflate(R.layout.fragment_posts_list, container, false);
             cardsList = (ListView) rootView.findViewById(R.id.cards_list);
+            mProgressBar = (ProgressBar) rootView.findViewById(R.id.progressbar_circular_posts);
+            mProgressBar.setIndeterminateDrawable(new CircularProgressDrawable
+                    .Builder(getActivity())
+                    .colors(getResources().getIntArray(R.array.gplus_colors))
+                    .sweepSpeed(1f)
+                    .strokeWidth(5)
+                    .style(CircularProgressDrawable.Style.ROUNDED)
+                    .build());
             setupList();
         }
         ViewGroup parent = (ViewGroup) rootView.getParent();

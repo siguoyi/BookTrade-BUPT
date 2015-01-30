@@ -3,22 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
-
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center">
-
-        <ProgressBar
-            android:id="@+id/progressbar_circular"
-            style="@style/ProgressBar.Horizontal"
-            android:layout_width="42dp"
-            android:layout_height="42dp"
-            android:indeterminate="true" />
-
-
-    </RelativeLayout>
-
     <ScrollView
         android:id="@+id/user_info"
         android:layout_width="match_parent"
@@ -513,4 +497,13 @@
             </TableLayout>
         </LinearLayout>
     </ScrollView>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        >
+        <ProgressBar
+            android:id="@+id/progressbar_circular_person"
+            style="@style/ProgressBar.Horizontal" />
+    </RelativeLayout>
 </FrameLayout>
