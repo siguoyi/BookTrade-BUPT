@@ -5,4 +5,4 @@
 ## 使用到的开源库 ##
 
 
-- ###[SmoothProgressBar](https://github.com/castorflex/SmoothProgressBar)###
+- [SmoothProgressBar](https://github.com/castorflex/SmoothProgressBar)
