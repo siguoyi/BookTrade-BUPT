@@ -1,5 +1,5 @@
+
 package com.bupt.booktrade;
-////////////////
 
 import android.app.Activity;
 import android.app.Fragment;

@@ -1,1 +1,1 @@
-include ':app', ':library-circular'
+include ':app', ':library-circular', ':nforum-sdk'

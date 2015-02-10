@@ -15,12 +15,12 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.bupt.booktrade.R;
-import com.bupt.booktrade.nForumSDK.NForumSDK;
-import com.bupt.booktrade.nForumSDK.http.NForumException;
-import com.bupt.booktrade.nForumSDK.model.User;
-import com.bupt.booktrade.nForumSDK.service.UserService;
-import com.bupt.booktrade.nForumSDK.util.Host;
 import com.bupt.booktrade.utils.TimeFormat;
+import com.dss886.nForumSDK.NForumSDK;
+import com.dss886.nForumSDK.http.NForumException;
+import com.dss886.nForumSDK.model.User;
+import com.dss886.nForumSDK.service.UserService;
+import com.dss886.nForumSDK.util.Host;
 
 import org.json.JSONException;
 
