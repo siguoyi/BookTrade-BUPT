@@ -7,6 +7,7 @@ gradlew.bat
 *.iml
 /library-circular
 /nforum-sdk
+
 ### Java template
 *.class
 
