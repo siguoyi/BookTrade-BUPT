@@ -1,11 +1,12 @@
 .gradle
 /local.properties
-/.idea/workspace.xml
-/.idea/libraries
+/.idea
 .DS_Store
 /build
+gradlew.bat
+*.iml
 /library-circular
-/nForumSDK
+/nforum-sdk
 ### Java template
 *.class
 
