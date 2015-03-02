@@ -14,8 +14,26 @@
     <string name="list_item_right_button">Right</string>
     <string name="one_more_back">再按一次返回键退出</string>
     <string name="list_click">list: </string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <!-- Nav Drawer Menu Items -->
+    <string-array name="nav_drawer_items">
+        <item>个人信息</item>
+        <item>看帖</item>
+        <item>发帖</item>
+        <item>消息</item>
+        <item>设置</item>
+        <item>关于</item>
+    </string-array>
+
+    <!-- Nav Drawer List Item Icons -->
+    <!-- Keep them in order as the titles are in -->
+    <array name="nav_drawer_icons">
+        <item>@drawable/ic_home</item>
+        <item>@drawable/ic_people</item>
+        <item>@drawable/ic_photos</item>
+        <item>@drawable/ic_communities</item>
+        <item>@drawable/ic_pages</item>
+        <item>@drawable/ic_whats_hot</item>
+    </array>
 
     <!-- Content Description -->
     <string name="desc_list_item_icon">Item Icon</string>
