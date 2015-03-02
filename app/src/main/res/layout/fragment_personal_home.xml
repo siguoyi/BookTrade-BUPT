@@ -504,6 +504,7 @@
         >
         <ProgressBar
             android:id="@+id/progressbar_circular_person"
-            style="@style/ProgressBar.Horizontal" />
+            style="@style/ProgressBar.Horizontal"
+            android:visibility="invisible"/>
     </RelativeLayout>
 </FrameLayout>

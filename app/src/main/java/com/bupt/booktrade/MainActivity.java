@@ -70,7 +70,7 @@ public class MainActivity extends Activity {
 
         // nav drawer icons from resources
         TypedArray navMenuIcons = getResources()
-                .obtainTypedArray(R.array.nav_drawer_icons);
+            .obtainTypedArray(R.array.nav_drawer_icons);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.list_slidermenu);
@@ -96,16 +96,16 @@ public class MainActivity extends Activity {
 
         // setting the nav drawer list adapter
         NavDrawerListAdapter adapter = new NavDrawerListAdapter(getApplicationContext(),
-                navDrawerItems);
+            navDrawerItems);
         mDrawerList.setAdapter(adapter);
 
         // enabling action bar app icon and behaving it as toggle button
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
-                R.drawable.ic_drawer, //nav menu toggle icon
-                R.string.app_name, // nav drawer open - description for accessibility
-                R.string.app_name // nav drawer close - description for accessibility
+            R.drawable.ic_drawer, //nav menu toggle icon
+            R.string.navigation_drawer_open, // nav drawer open - description for accessibility
+            R.string.navigation_drawer_close// nav drawer close - description for accessibility
         ) {
             public void onDrawerClosed(View view) {
                 getActionBar().setTitle(mTitle);
@@ -140,25 +140,25 @@ public class MainActivity extends Activity {
     @Override
     public void onBackPressed() {
 
-            if (mDrawerLayout.isDrawerOpen(mDrawerList)) {
-                mDrawerLayout.closeDrawer(mDrawerList);
-            } else {
-                if (doubleBackToExitPressedOnce) {
-                    super.onBackPressed();
-                    ToastUtils.clearToast();
-                    finish();
-                    return;
-                }
-                this.doubleBackToExitPressedOnce = true;
-                ToastUtils.showToast(this, R.string.one_more_back, Toast.LENGTH_SHORT);
-
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        doubleBackToExitPressedOnce = false;
-                    }
-                }, 2000);
+        if (mDrawerLayout.isDrawerOpen(mDrawerList)) {
+            mDrawerLayout.closeDrawer(mDrawerList);
+        } else {
+            if (doubleBackToExitPressedOnce) {
+                super.onBackPressed();
+                ToastUtils.clearToast();
+                finish();
+                return;
             }
+            this.doubleBackToExitPressedOnce = true;
+            ToastUtils.showToast(this, R.string.one_more_back, Toast.LENGTH_SHORT);
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    doubleBackToExitPressedOnce = false;
+                }
+            }, 2000);
+        }
     }
 
     @Override
@@ -225,7 +225,7 @@ public class MainActivity extends Activity {
         if (fragment != null) {
             FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction()
-                    .replace(R.id.frame_container, fragment).commit();
+                .replace(R.id.frame_container, fragment).commit();
 
             // update selected item and title, then close the drawer
             mDrawerList.setItemChecked(position, true);
@@ -267,7 +267,7 @@ public class MainActivity extends Activity {
      * Slide menu item click listener
      */
     private class SlideMenuClickListener implements
-            ListView.OnItemClickListener {
+        ListView.OnItemClickListener {
         public void onItemClick(AdapterView<?> parent, View view, int position,
                                 long id) {
             // display view for selected nav drawer item
