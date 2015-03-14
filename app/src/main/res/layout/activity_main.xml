@@ -3,19 +3,59 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Framelayout to display Fragments -->
+    <!-- FrameLayout to display Fragments -->
     <FrameLayout
         android:id="@+id/frame_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+    </FrameLayout>
 
-    <!-- Listview to display slider menu -->
-    <ListView
-        android:id="@+id/list_slidermenu"
-        android:layout_width="240dp"
+    <LinearLayout
+        android:id="@+id/drawer_linear_layout"
+        android:layout_width="@dimen/navigation_drawer_width"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:choiceMode="singleChoice"
-        android:listSelector="@drawable/list_selector"
-        android:background="@color/list_background" />
+        android:background="@color/list_background"
+        android:orientation="vertical">
+        <RelativeLayout
+            android:id="@+id/user_drawer_header"
+            android:layout_width="@dimen/navigation_drawer_width"
+            android:layout_height="60dp">
+
+            <ImageView
+                android:id="@+id/drawer_user_avatar"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:src="@drawable/avatar_default_m"/>
+
+            <TextView
+                android:id="@+id/drawer_user_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/drawer_user_avatar"
+                android:layout_toEndOf="@id/drawer_user_avatar"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/me"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_medium"/>
+
+        </RelativeLayout>
+        <!-- ListView to display slider menu -->
+        <ListView
+            android:id="@+id/drawer_list_item"
+            android:layout_width="240dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:choiceMode="singleChoice"
+            android:listSelector="@drawable/list_selector" />
+    </LinearLayout>
 </android.support.v4.widget.DrawerLayout>

@@ -41,32 +41,12 @@ public class NavDrawerListAdapter extends BaseAdapter {
         return position;
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        if (position == 0) {
-            return TYPE_ME;
-        } else {
-            return TYPE_LIST;
-        }
-    }
 
-    @Override
-    public int getViewTypeCount() {
-        return 2;
-    }
 
     public View getView(int position, View convertView, ViewGroup parent) {
-        int type = getItemViewType(position);
         if (convertView == null) {
             LayoutInflater mInflater = (LayoutInflater)
                     context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-            switch (type) {
-                case TYPE_ME:
-                    convertView = mInflater.inflate(R.layout.drawer_list_me, null);
-                    ImageView avatar = (ImageView) convertView.findViewById(R.id.drawer_avatar);
-                    TextView userName = (TextView) convertView.findViewById(R.id.drawer_user_name);
-                    break;
-                case TYPE_LIST:
                     convertView = mInflater.inflate(R.layout.drawer_list_item, null);
                     ImageView imgIcon = (ImageView) convertView.findViewById(R.id.icon);
                     TextView txtTitle = (TextView) convertView.findViewById(R.id.title);
@@ -83,12 +63,6 @@ public class NavDrawerListAdapter extends BaseAdapter {
                         // hide the counter view
                         txtCount.setVisibility(View.GONE);
                     }
-
-                    break;
-                default:
-                    break;
-            }
-
         }
 
         return convertView;

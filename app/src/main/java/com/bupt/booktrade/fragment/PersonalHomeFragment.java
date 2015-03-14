@@ -1,11 +1,10 @@
 package com.bupt.booktrade.fragment;
 
-import android.app.Fragment;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,7 +52,6 @@ public class PersonalHomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        if (rootView == null) {
             getUserInfo();
             rootView = inflater.inflate(R.layout.fragment_personal_home, container, false);
             mProgressBar = (ProgressBar) rootView.findViewById(R.id.progressbar_circular_person);
@@ -64,12 +62,6 @@ public class PersonalHomeFragment extends Fragment {
                     .strokeWidth(4)
                     .style(CircularProgressDrawable.Style.ROUNDED)
                     .build());
-        }
-
-        ViewGroup parent = (ViewGroup) rootView.getParent();
-        if (parent != null) {
-            parent.removeView(rootView);
-        }
         return rootView;
     }
 
@@ -164,8 +156,6 @@ public class PersonalHomeFragment extends Fragment {
         lastLoginTime.setText(TimeFormat.transTime(user.last_login_time * 1000l));
         lastLoginIp.setText(user.last_login_ip);
 
-        if (D) Log.d(TAG, String.valueOf(user.first_login_time));
-        if (D) Log.d(TAG, String.valueOf(user.last_login_time));
         avatar.setImageBitmap(bitmap);
     }
 

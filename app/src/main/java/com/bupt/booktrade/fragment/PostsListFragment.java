@@ -1,7 +1,7 @@
 package com.bupt.booktrade.fragment;
 
-import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,27 +22,20 @@ import fr.castorflex.android.circularprogressbar.CircularProgressDrawable;
 public class PostsListFragment extends Fragment {
 
     private ListView cardsList;
-    private View rootView;
     private ProgressBar mProgressBar;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (rootView == null) {
-            rootView = inflater.inflate(R.layout.fragment_posts_list, container, false);
+            View rootView = inflater.inflate(R.layout.fragment_posts_list, container, false);
             cardsList = (ListView) rootView.findViewById(R.id.cards_list);
-            mProgressBar = (ProgressBar) rootView.findViewById(R.id.progressbar_circular_posts);
-            mProgressBar.setIndeterminateDrawable(new CircularProgressDrawable
-                    .Builder(getActivity())
-                    .colors(getResources().getIntArray(R.array.gplus_colors))
-                    .sweepSpeed(1f)
-                    .strokeWidth(5)
-                    .style(CircularProgressDrawable.Style.ROUNDED)
-                    .build());
+//            mProgressBar = (ProgressBar) rootView.findViewById(R.id.progressbar_circular_posts);
+//            mProgressBar.setIndeterminateDrawable(new CircularProgressDrawable
+//                    .Builder(getActivity())
+//                    .colors(getResources().getIntArray(R.array.gplus_colors))
+//                    .sweepSpeed(1f)
+//                    .strokeWidth(5)
+//                    .style(CircularProgressDrawable.Style.ROUNDED)
+//                    .build());
             setupList();
-        }
-        ViewGroup parent = (ViewGroup) rootView.getParent();
-        if (parent != null) {
-            parent.removeView(rootView);
-        }
         return rootView;
     }
 

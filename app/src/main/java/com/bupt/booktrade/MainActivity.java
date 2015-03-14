@@ -1,20 +1,21 @@
 
 package com.bupt.booktrade;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -31,10 +32,11 @@ import com.bupt.booktrade.utils.ToastUtils;
 import java.util.ArrayList;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends FragmentActivity {
     private final static String TAG = "MainActivity:  ";
     private final boolean D = true;
     private DrawerLayout mDrawerLayout;
+    private LinearLayout mDrawerLinear;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
 
@@ -46,7 +48,7 @@ public class MainActivity extends Activity {
 
     // slide menu items
     private String[] navMenuTitles;
-    private int drawerPosition = 1;
+    private int drawerPosition = 0;
     private boolean doubleBackToExitPressedOnce = false;
 
     private Fragment fragment = null;
@@ -73,27 +75,32 @@ public class MainActivity extends Activity {
                 .obtainTypedArray(R.array.nav_drawer_icons);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.list_slidermenu);
+        mDrawerLinear = (LinearLayout) findViewById(R.id.drawer_linear_layout);
+        mDrawerList = (ListView) findViewById(R.id.drawer_list_item);
 
         ArrayList<NavDrawerItem> navDrawerItems = new ArrayList<>();
 
-        // Peersonal Home
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[0], navMenuIcons.getResourceId(0, -1)));
         // Posts List
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1), true, "5"));
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[0], navMenuIcons.getResourceId(0, -1), true, "5"));
         // New Post
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1)));
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1)));
         // Message
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1), true, "22"));
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1), true, "22"));
         // Setting
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1)));
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1)));
         // About
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[5], navMenuIcons.getResourceId(5, -1)));
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1)));
         // Recycle the typed array
         navMenuIcons.recycle();
 
         mDrawerList.setOnItemClickListener(new SlideMenuClickListener());
-
+        mDrawerLinear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerPosition = -1;
+                displayView(drawerPosition);
+            }
+        });
         // setting the nav drawer list adapter
         NavDrawerListAdapter adapter = new NavDrawerListAdapter(getApplicationContext(),
                 navDrawerItems);
@@ -140,8 +147,8 @@ public class MainActivity extends Activity {
     @Override
     public void onBackPressed() {
 
-            if (mDrawerLayout.isDrawerOpen(mDrawerList)) {
-                mDrawerLayout.closeDrawer(mDrawerList);
+            if (mDrawerLayout.isDrawerOpen(mDrawerLinear)) {
+                mDrawerLayout.closeDrawer(mDrawerLinear);
             } else {
                 if (doubleBackToExitPressedOnce) {
                     super.onBackPressed();
@@ -188,34 +195,34 @@ public class MainActivity extends Activity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         // if nav drawer is opened, hide the action items
-        boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+        boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerLinear);
         menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
         return super.onPrepareOptionsMenu(menu);
     }
 
     /**
-     * Diplaying fragment view for selected nav drawer list item
+     * Displaying fragment view for selected nav drawer list item
      */
     private void displayView(int position) {
         // update the main content by replacing fragments
 
         switch (position) {
-            case 0:
+            case -1:
                 fragment = personalHomeFragment;
                 break;
-            case 1:
+            case 0:
                 fragment = postsListFragment;
                 break;
-            case 2:
+            case 1:
                 fragment = newPostFragment;
                 break;
-            case 3:
+            case 2:
                 fragment = messageFragment;
                 break;
-            case 4:
+            case 3:
                 fragment = settingFragment;
                 break;
-            case 5:
+            case 4:
                 fragment = aboutFragment;
                 break;
             default:
@@ -223,15 +230,16 @@ public class MainActivity extends Activity {
         }
 
         if (fragment != null) {
-            FragmentManager fragmentManager = getFragmentManager();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.frame_container, fragment).commit();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.frame_container, fragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
 
             // update selected item and title, then close the drawer
             mDrawerList.setItemChecked(position, true);
             mDrawerList.setSelection(position);
             setTitle(navMenuTitles[position]);
-            mDrawerLayout.closeDrawer(mDrawerList);
+            mDrawerLayout.closeDrawer(mDrawerLinear);
         } else {
             // error in creating fragment
             Log.e("MainActivity", "Error in creating fragment");

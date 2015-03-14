@@ -6,7 +6,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="drawer_open">Slider Menu Opened</string>
     <string name="drawer_close">Slider Menu Closed</string>
-
     <string name="action_about">About</string>
     <string name="dialog_message">Created by Yasin Yildirim - 2014</string>
     <string name="dialog_ok">OK</string>
@@ -14,9 +13,9 @@
     <string name="list_item_right_button">Right</string>
     <string name="one_more_back">再按一次返回键退出</string>
     <string name="list_click">list: </string>
+    <string name="me">me</string>
     <!-- Nav Drawer Menu Items -->
     <string-array name="nav_drawer_items">
-        <item>个人信息</item>
         <item>看帖</item>
         <item>发帖</item>
         <item>消息</item>
@@ -27,7 +26,6 @@
     <!-- Nav Drawer List Item Icons -->
     <!-- Keep them in order as the titles are in -->
     <array name="nav_drawer_icons">
-        <item>@drawable/ic_home</item>
         <item>@drawable/ic_people</item>
         <item>@drawable/ic_photos</item>
         <item>@drawable/ic_communities</item>
