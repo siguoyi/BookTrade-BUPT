@@ -49,7 +49,7 @@
                 android:textSize="@dimen/text_size_medium"/>
 
         </RelativeLayout>
-        <!-- ListView to display slider menu -->
+        <!-- ListView to display drawer menu -->
         <ListView
             android:id="@+id/drawer_list_item"
             android:layout_width="240dp"

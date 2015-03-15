@@ -1,14 +1,15 @@
 package com.bupt.booktrade.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bupt.booktrade.R;
@@ -17,25 +18,21 @@ import com.bupt.booktrade.utils.ToastUtils;
 
 import java.util.ArrayList;
 
-import fr.castorflex.android.circularprogressbar.CircularProgressDrawable;
-
-public class PostsListFragment extends Fragment {
+public class PostsListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private ListView cardsList;
-    private ProgressBar mProgressBar;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_posts_list, container, false);
-            cardsList = (ListView) rootView.findViewById(R.id.cards_list);
-//            mProgressBar = (ProgressBar) rootView.findViewById(R.id.progressbar_circular_posts);
-//            mProgressBar.setIndeterminateDrawable(new CircularProgressDrawable
-//                    .Builder(getActivity())
-//                    .colors(getResources().getIntArray(R.array.gplus_colors))
-//                    .sweepSpeed(1f)
-//                    .strokeWidth(5)
-//                    .style(CircularProgressDrawable.Style.ROUNDED)
-//                    .build());
-            setupList();
+        View rootView = inflater.inflate(R.layout.fragment_posts_list, container, false);
+        cardsList = (ListView) rootView.findViewById(R.id.cards_list);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_container);
+        mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light, android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+        setupList();
         return rootView;
     }
 
@@ -52,6 +49,21 @@ public class PostsListFragment extends Fragment {
         }
 
         return new CardsAdapter(getActivity(), items, new ListItemClickListener());
+    }
+
+    @Override
+    public void onRefresh() {
+
+        // TODO Auto-generated method stub
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        }, 5000);
+
+
     }
 
     /*

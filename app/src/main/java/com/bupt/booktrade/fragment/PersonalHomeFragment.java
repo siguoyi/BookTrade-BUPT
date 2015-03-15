@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -31,7 +30,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import fr.castorflex.android.circularprogressbar.CircularProgressDrawable;
 
 public class PersonalHomeFragment extends Fragment {
 
@@ -40,7 +38,6 @@ public class PersonalHomeFragment extends Fragment {
     private User user = new User();
     private Bitmap bitmap;
     private View rootView;
-    private ProgressBar mProgressBar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,16 +49,8 @@ public class PersonalHomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-            getUserInfo();
-            rootView = inflater.inflate(R.layout.fragment_personal_home, container, false);
-            mProgressBar = (ProgressBar) rootView.findViewById(R.id.progressbar_circular_person);
-            mProgressBar.setIndeterminateDrawable(new CircularProgressDrawable
-                    .Builder(getActivity())
-                    .colors(getResources().getIntArray(R.array.gplus_colors))
-                    .sweepSpeed(1f)
-                    .strokeWidth(4)
-                    .style(CircularProgressDrawable.Style.ROUNDED)
-                    .build());
+        getUserInfo();
+        rootView = inflater.inflate(R.layout.fragment_personal_home, container, false);
         return rootView;
     }
 
@@ -71,7 +60,6 @@ public class PersonalHomeFragment extends Fragment {
             @Override
             public void onTaskDone() {
                 //ToastUtils.showToast(getActivity(), userName.getText().toString(), Toast.LENGTH_SHORT);
-                mProgressBar.setVisibility(View.GONE);
                 ScrollView userInfo = (ScrollView) rootView.findViewById(R.id.user_info);
                 userInfo.setVisibility(View.VISIBLE);
                 setUserInfo();
