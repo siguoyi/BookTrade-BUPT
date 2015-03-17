@@ -17,18 +17,17 @@
         android:layout_gravity="start"
         android:background="@color/list_background"
         android:orientation="vertical">
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/user_drawer_header"
-            android:layout_width="@dimen/navigation_drawer_width"
-            android:layout_height="60dp">
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
             <ImageView
                 android:id="@+id/drawer_user_avatar"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
                 android:src="@drawable/avatar_default_m"/>
@@ -37,9 +36,6 @@
                 android:id="@+id/drawer_user_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/drawer_user_avatar"
-                android:layout_toEndOf="@id/drawer_user_avatar"
-                android:layout_marginTop="15dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginRight="16dp"
@@ -48,7 +44,7 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_size_medium"/>
 
-        </RelativeLayout>
+        </LinearLayout>
         <!-- ListView to display drawer menu -->
         <ListView
             android:id="@+id/drawer_list_item"

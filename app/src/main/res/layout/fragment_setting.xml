@@ -4,4 +4,8 @@
     android:layout_height="match_parent"
     android:gravity="center">
 
+    <ProgressBar
+        android:id="@+id/progressbar_circular"
+        style="@style/ProgressBar.Horizontal"
+        />
 </RelativeLayout>

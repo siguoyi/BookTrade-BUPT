@@ -1,5 +1,5 @@
 
-package com.bupt.booktrade;
+package com.bupt.booktrade.activity;
 
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.bupt.booktrade.R;
 import com.bupt.booktrade.adapter.NavDrawerListAdapter;
 import com.bupt.booktrade.fragment.AboutFragment;
 import com.bupt.booktrade.fragment.MessageFragment;
@@ -27,14 +28,13 @@ import com.bupt.booktrade.fragment.PersonalHomeFragment;
 import com.bupt.booktrade.fragment.PostsListFragment;
 import com.bupt.booktrade.fragment.SettingFragment;
 import com.bupt.booktrade.fragment.model.NavDrawerItem;
+import com.bupt.booktrade.utils.LogUtils;
 import com.bupt.booktrade.utils.ToastUtils;
 
 import java.util.ArrayList;
 
 
-public class MainActivity extends FragmentActivity {
-    private final static String TAG = "MainActivity:  ";
-    private final boolean D = true;
+public class MainActivity extends BaseActivity {
     private DrawerLayout mDrawerLayout;
     private LinearLayout mDrawerLinear;
     private ListView mDrawerList;
@@ -64,7 +64,7 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (D) Log.d(TAG, "onCreate");
+        LogUtils.i(TAG, "onCreate");
         mTitle = mDrawerTitle = getTitle();
 
         // load slide menu items
