@@ -2,24 +2,50 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/lightgrey">
+    android:background="@color/lightgrey"
+    android:paddingLeft="4dp"
+    android:paddingRight="4dp">
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_container"
+
+    <com.demievil.pulldownlistview.PullDownListView
+        android:id="@+id/posts_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="3dp"
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
+        android:scrollbarStyle="outsideInset"
+        tools:listitem="@layout/list_item_card">
 
-        <ListView
-            android:id="@+id/cards_list"
+        <RelativeLayout
+            android:id="@+id/layoutHeader"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clipToPadding="false"
-            android:divider="@android:color/transparent"
-            android:dividerHeight="3dp"
-            android:paddingLeft="2dp"
-            android:paddingRight="2dp"
-            android:scrollbarStyle="outsideOverlay"
-            tools:listitem="@layout/list_item_card" />
+            android:layout_height="60dp"
+            android:layout_alignParentTop="true">
+
+            <com.demievil.pulldownlistview.EyeView
+                android:id="@+id/eyeView"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerHorizontal="true" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/layoutFooter"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_alignParentBottom="true">
+
+            <com.demievil.pulldownlistview.YProgressView
+                android:id="@+id/progressView"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerHorizontal="true">
+
+            </com.demievil.pulldownlistview.YProgressView>
+        </RelativeLayout>
         <!--
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -31,5 +57,5 @@
                     style="@style/ProgressBar.Horizontal" />
             </RelativeLayout>
         -->
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </com.demievil.pulldownlistview.PullDownListView>
 </FrameLayout>
