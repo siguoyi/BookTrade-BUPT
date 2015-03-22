@@ -1,7 +1,6 @@
 package com.bupt.booktrade.fragment;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +10,7 @@ import com.bupt.booktrade.R;
 import fr.castorflex.android.circularprogressbar.CircularProgressDrawable;
 
 
-public class SettingFragment extends Fragment {
+public class SettingFragment extends BaseFragment {
 
     private ProgressBar mProgressBar;
     @Override

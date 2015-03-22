@@ -5,11 +5,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import com.bupt.booktrade.R;
 import com.bupt.booktrade.activity.MainActivity;
+import com.bupt.booktrade.utils.Constant;
+
 import cn.bmob.v3.Bmob;
 
 
 public class SplashActivity extends BaseActivity {
-    private static final String APP_KEY = "27ec576833c87b1a999df3fcea9b2044";
+    private static final String APP_KEY = Constant.BMOB_APP_ID;
     private static final long DELAY_TIME = 2000L;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

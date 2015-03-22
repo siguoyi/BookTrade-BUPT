@@ -96,6 +96,7 @@
     <orderEntry type="library" exported="" name="json" level="project" />
     <orderEntry type="library" exported="" name="httpclient-4.2.5" level="project" />
     <orderEntry type="module" module-name="nforum-sdk" exported="" />
+    <orderEntry type="module" module-name="pull-down-listview" exported="" />
   </component>
 </module>
 

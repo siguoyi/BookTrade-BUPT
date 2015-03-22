@@ -5,7 +5,7 @@
 
     <!-- FrameLayout to display Fragments -->
     <FrameLayout
-        android:id="@+id/frame_container"
+        android:id="@+id/frame_container_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     </FrameLayout>
@@ -18,11 +18,15 @@
         android:background="@color/list_background"
         android:orientation="vertical">
         <LinearLayout
-            android:id="@+id/user_drawer_header"
+            android:id="@+id/drawer_user_header"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:background="@drawable/user_header_selector">
 
             <ImageView
                 android:id="@+id/drawer_user_avatar"

@@ -1,16 +1,14 @@
-
 package com.bupt.booktrade.activity;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,12 +17,12 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.bupt.booktrade.MyApplication;
 import com.bupt.booktrade.R;
 import com.bupt.booktrade.adapter.NavDrawerListAdapter;
 import com.bupt.booktrade.fragment.AboutFragment;
 import com.bupt.booktrade.fragment.MessageFragment;
 import com.bupt.booktrade.fragment.NewPostFragment;
-import com.bupt.booktrade.fragment.PersonalHomeFragment;
 import com.bupt.booktrade.fragment.PostsListFragment;
 import com.bupt.booktrade.fragment.SettingFragment;
 import com.bupt.booktrade.fragment.model.NavDrawerItem;
@@ -37,6 +35,7 @@ import java.util.ArrayList;
 public class MainActivity extends BaseActivity {
     private DrawerLayout mDrawerLayout;
     private LinearLayout mDrawerLinear;
+    private LinearLayout mDrawerUserHeader;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
 
@@ -48,11 +47,19 @@ public class MainActivity extends BaseActivity {
 
     // slide menu items
     private String[] navMenuTitles;
-    private int drawerPosition = 0;
+
+    private static final int PERSONAL_HOME_LIST_FRAGMENT = -1;
+    private static final int POSTS_LIST_FRAGMENT = 0;
+    private static final int NEW_POST_FRAGMENT = 1;
+    private static final int MESSAGE_FRAGMENT = 2;
+    private static final int SETTING_FRAGMENT = 3;
+    private static final int ABOUT_FRAGMENT = 4;
+
+    private int drawerPosition = POSTS_LIST_FRAGMENT;//默认显示首页
+
     private boolean doubleBackToExitPressedOnce = false;
 
     private Fragment fragment = null;
-    private PersonalHomeFragment personalHomeFragment = new PersonalHomeFragment();
     private PostsListFragment postsListFragment = new PostsListFragment();
     private NewPostFragment newPostFragment = new NewPostFragment();
     private MessageFragment messageFragment = new MessageFragment();
@@ -67,44 +74,25 @@ public class MainActivity extends BaseActivity {
         LogUtils.i(TAG, "onCreate");
         mTitle = mDrawerTitle = getTitle();
 
-        // load slide menu items
-        navMenuTitles = getResources().getStringArray(R.array.nav_drawer_items);
-
-        // nav drawer icons from resources
-        TypedArray navMenuIcons = getResources()
-                .obtainTypedArray(R.array.nav_drawer_icons);
-
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLinear = (LinearLayout) findViewById(R.id.drawer_linear_layout);
+        mDrawerUserHeader = (LinearLayout) findViewById(R.id.drawer_user_header);
         mDrawerList = (ListView) findViewById(R.id.drawer_list_item);
 
-        ArrayList<NavDrawerItem> navDrawerItems = new ArrayList<>();
-
-        // Posts List
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[0], navMenuIcons.getResourceId(0, -1), true, "5"));
-        // New Post
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1)));
-        // Message
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1), true, "22"));
-        // Setting
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1)));
-        // About
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1)));
-        // Recycle the typed array
-        navMenuIcons.recycle();
+        initNavDrawerItems();
 
         mDrawerList.setOnItemClickListener(new SlideMenuClickListener());
-        mDrawerLinear.setOnClickListener(new View.OnClickListener() {
+
+        mDrawerUserHeader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                drawerPosition = -1;
-                displayView(drawerPosition);
+                //drawerPosition = PERSONAL_HOME_LIST_FRAGMENT;
+                //displayView(drawerPosition);
+                Intent intent = new Intent(MainActivity.this, PersonalHomeActivity.class);
+                startActivity(intent);
+                mDrawerLayout.closeDrawer(mDrawerLinear);
             }
         });
-        // setting the nav drawer list adapter
-        NavDrawerListAdapter adapter = new NavDrawerListAdapter(getApplicationContext(),
-                navDrawerItems);
-        mDrawerList.setAdapter(adapter);
 
         // enabling action bar app icon and behaving it as toggle button
         getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -134,6 +122,36 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+
+    private void initNavDrawerItems() {
+        // load slide menu items
+        navMenuTitles = getResources().getStringArray(R.array.nav_drawer_items);
+
+        // nav drawer icons from resources
+        TypedArray navMenuIcons = getResources()
+                .obtainTypedArray(R.array.nav_drawer_icons);
+        ArrayList<NavDrawerItem> navDrawerItems = new ArrayList<>();
+
+        // Posts List
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[0], navMenuIcons.getResourceId(0, -1)));
+        // New Post
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1)));
+        // Message
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1)));
+        // Setting
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1)));
+        // About
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1)));
+        // Recycle the typed array
+        navMenuIcons.recycle();
+
+        // setting the nav drawer list adapter
+        NavDrawerListAdapter adapter = new NavDrawerListAdapter(getApplicationContext(),
+                navDrawerItems);
+        mDrawerList.setAdapter(adapter);
+    }
+
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -147,25 +165,27 @@ public class MainActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
 
-            if (mDrawerLayout.isDrawerOpen(mDrawerLinear)) {
-                mDrawerLayout.closeDrawer(mDrawerLinear);
-            } else {
-                if (doubleBackToExitPressedOnce) {
-                    super.onBackPressed();
-                    ToastUtils.clearToast();
-                    finish();
-                    return;
-                }
-                this.doubleBackToExitPressedOnce = true;
-                ToastUtils.showToast(this, R.string.one_more_back, Toast.LENGTH_SHORT);
+        if (mDrawerLayout.isDrawerOpen(mDrawerLinear)) {
+            mDrawerLayout.closeDrawer(mDrawerLinear);
+        } else {
+            if (doubleBackToExitPressedOnce) {
+                ToastUtils.clearToast();
+                MyApplication.getMyApplication().exit();
+                finish();
+                super.onBackPressed();
+                return;
 
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        doubleBackToExitPressedOnce = false;
-                    }
-                }, 2000);
             }
+            this.doubleBackToExitPressedOnce = true;
+            ToastUtils.showToast(this, R.string.one_more_back, Toast.LENGTH_SHORT);
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    doubleBackToExitPressedOnce = false;
+                }
+            }, 2000);
+        }
     }
 
     @Override
@@ -207,22 +227,19 @@ public class MainActivity extends BaseActivity {
         // update the main content by replacing fragments
 
         switch (position) {
-            case -1:
-                fragment = personalHomeFragment;
-                break;
-            case 0:
+            case POSTS_LIST_FRAGMENT:
                 fragment = postsListFragment;
                 break;
-            case 1:
+            case NEW_POST_FRAGMENT:
                 fragment = newPostFragment;
                 break;
-            case 2:
+            case MESSAGE_FRAGMENT:
                 fragment = messageFragment;
                 break;
-            case 3:
+            case SETTING_FRAGMENT:
                 fragment = settingFragment;
                 break;
-            case 4:
+            case ABOUT_FRAGMENT:
                 fragment = aboutFragment;
                 break;
             default:
@@ -231,7 +248,7 @@ public class MainActivity extends BaseActivity {
 
         if (fragment != null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.frame_container, fragment);
+            transaction.replace(R.id.frame_container_main, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
 
@@ -239,10 +256,11 @@ public class MainActivity extends BaseActivity {
             mDrawerList.setItemChecked(position, true);
             mDrawerList.setSelection(position);
             setTitle(navMenuTitles[position]);
+
             mDrawerLayout.closeDrawer(mDrawerLinear);
         } else {
             // error in creating fragment
-            Log.e("MainActivity", "Error in creating fragment");
+            LogUtils.e("MainActivity", "Error in creating fragment");
         }
     }
 
