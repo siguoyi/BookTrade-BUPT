@@ -1,0 +1,8 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_progress"
+        android:showAsAction="always"
+        android:actionLayout="@layout/action_progress_layout"
+        android:title="@string/action_progress"
+        />
+</menu>
