@@ -9,7 +9,7 @@ import cn.bmob.v3.datatype.BmobRelation;
  * Created by LiuYan on 2015/3/17.
  */
 public class User extends BmobUser {
-    public static final String TAG = "User: ";
+    public static final String TAG = "User";
     private String signature;
     private BmobFile avatar;
     private BmobRelation favorite;

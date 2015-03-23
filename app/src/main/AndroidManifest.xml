@@ -4,7 +4,6 @@
 
     <!-- bmob permission -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -28,11 +27,20 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.MainActivity"
-            android:label="@string/title_activity_main">
+            android:label="@string/app_name">
         </activity>
         <activity
             android:name=".activity.PersonalHomeActivity"
             android:label="@string/title_activity_base_home"
+            android:parentActivityName=".activity.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.MainActivity" />
+        </activity>
+        <activity
+            android:name=".activity.NewPostActivity"
+            android:label="@string/action_send_post"
+            android:windowSoftInputMode="adjustResize"
             android:parentActivityName=".activity.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

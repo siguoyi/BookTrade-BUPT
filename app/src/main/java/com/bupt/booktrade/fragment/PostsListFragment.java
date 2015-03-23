@@ -1,6 +1,8 @@
 package com.bupt.booktrade.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,47 +17,25 @@ import com.bupt.booktrade.utils.ToastUtils;
 
 import java.util.ArrayList;
 
-import in.srain.cube.views.ptr.PtrFrameLayout;
-import in.srain.cube.views.ptr.header.MaterialHeader;
-import in.srain.cube.views.ptr.util.PtrLocalDisplay;
+public class PostsListFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
 
-public class PostsListFragment extends BaseFragment {
-
-    private ListView postsList;
+    private ListView cardsList;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_posts_list, container, false);
-        final PtrFrameLayout frame = (PtrFrameLayout) rootView.findViewById(R.id.material_style_ptr_frame);
-        // header
-        final MaterialHeader header = new MaterialHeader(mContext);
-        int[] colors = getResources().getIntArray(R.array.google_colors);
-        header.setColorSchemeColors(colors);
-        header.setLayoutParams(new PtrFrameLayout.LayoutParams(-1, -2));
-        header.setPadding(0, PtrLocalDisplay.dp2px(15), 0, PtrLocalDisplay .dp2px(10));
-        header.setPtrFrameLayout(frame);
-
-        frame.setLoadingMinTime(1000);
-        frame.setDurationToCloseHeader(1500);
-        frame.setHeaderView(header);
-        frame.addPtrUIHandler(header);
-
-        frame.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                frame.autoRefresh(false);
-            }
-        }, 100);
-
-
-        postsList = (ListView) rootView.findViewById(R.id.posts_list);
+        cardsList = (ListView) rootView.findViewById(R.id.cards_list);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_container);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.red, R.color.blue, R.color.yellow, R.color.green);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
         setupList();
         return rootView;
     }
 
     private void setupList() {
-        postsList.setAdapter(createAdapter());
-        postsList.setOnItemClickListener(new ListItemClickListener());
+        cardsList.setAdapter(createAdapter());
+        cardsList.setOnItemClickListener(new ListItemClickListener());
     }
 
     private CardsAdapter createAdapter() {
@@ -66,6 +46,21 @@ public class PostsListFragment extends BaseFragment {
         }
 
         return new CardsAdapter(getActivity(), items, new ListItemClickListener());
+    }
+
+    @Override
+    public void onRefresh() {
+
+        // TODO Auto-generated method stub
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        }, 5000);
+
+
     }
 
     /*
@@ -90,6 +85,5 @@ public class PostsListFragment extends BaseFragment {
             ToastUtils.showToast(getActivity(), "Clicked on List Item " + position, Toast.LENGTH_SHORT);
         }
     }
-
 
 }

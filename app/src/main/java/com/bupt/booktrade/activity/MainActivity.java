@@ -22,7 +22,6 @@ import com.bupt.booktrade.R;
 import com.bupt.booktrade.adapter.NavDrawerListAdapter;
 import com.bupt.booktrade.fragment.AboutFragment;
 import com.bupt.booktrade.fragment.MessageFragment;
-import com.bupt.booktrade.fragment.NewPostFragment;
 import com.bupt.booktrade.fragment.PostsListFragment;
 import com.bupt.booktrade.fragment.SettingFragment;
 import com.bupt.booktrade.fragment.model.NavDrawerItem;
@@ -61,7 +60,6 @@ public class MainActivity extends BaseActivity {
 
     private Fragment fragment = null;
     private PostsListFragment postsListFragment = new PostsListFragment();
-    private NewPostFragment newPostFragment = new NewPostFragment();
     private MessageFragment messageFragment = new MessageFragment();
     private SettingFragment settingFragment = new SettingFragment();
     private AboutFragment aboutFragment = new AboutFragment();
@@ -190,7 +188,7 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
@@ -216,7 +214,7 @@ public class MainActivity extends BaseActivity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         // if nav drawer is opened, hide the action items
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerLinear);
-        menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
+        //menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -231,7 +229,9 @@ public class MainActivity extends BaseActivity {
                 fragment = postsListFragment;
                 break;
             case NEW_POST_FRAGMENT:
-                fragment = newPostFragment;
+                Intent intent = new Intent(MainActivity.this, NewPostActivity.class);
+                startActivity(intent);
+                mDrawerLayout.closeDrawer(mDrawerLinear);
                 break;
             case MESSAGE_FRAGMENT:
                 fragment = messageFragment;

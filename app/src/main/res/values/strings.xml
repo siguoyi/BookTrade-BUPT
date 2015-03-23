@@ -3,6 +3,7 @@
 
     <string name="app_name">北邮二手书</string>
     <string name="action_settings">Settings</string>
+    <string name="action_send_post">Upload</string>
     <string name="hello_world">Hello world!</string>
     <string name="drawer_open">Slider Menu Opened</string>
     <string name="drawer_close">Slider Menu Closed</string>
@@ -14,7 +15,7 @@
     <string name="one_more_back">再按一次返回键退出</string>
     <string name="list_click">list: </string>
     <string name="me">me</string>
-
+    <string name="new_post_hint">请输入图书的描述信息</string>
     <!-- Content Description -->
     <string name="desc_list_item_icon">Item Icon</string>
     <string name="title_activity_splash">SplashActivity</string>
@@ -22,5 +23,6 @@
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_base_home">个人主页</string>
+    <string name="title_activity_new_post">发帖</string>
 
 </resources>
