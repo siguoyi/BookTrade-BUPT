@@ -8,11 +8,12 @@ import com.bupt.booktrade.utils.ActivityManagerUtils;
 
 import cn.bmob.v3.BmobUser;
 
+
 /**
  * Created by LiuYan on 2015/3/17.
  */
 public class MyApplication extends Application {
-    public static final String TAG = "MyApplication: ";
+    public static final String TAG = "MyApplication";
     public static MyApplication myApplication = null;
 
     public static MyApplication getMyApplication() {

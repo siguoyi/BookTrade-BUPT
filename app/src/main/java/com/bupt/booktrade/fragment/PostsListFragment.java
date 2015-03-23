@@ -1,126 +1,60 @@
 package com.bupt.booktrade.fragment;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.bupt.booktrade.R;
 import com.bupt.booktrade.adapter.CardsAdapter;
 import com.bupt.booktrade.utils.ToastUtils;
-import com.demievil.pulldownlistview.EyeView;
-import com.demievil.pulldownlistview.PullDownListView;
-import com.demievil.pulldownlistview.YProgressView;
 
 import java.util.ArrayList;
+
+import in.srain.cube.views.ptr.PtrFrameLayout;
+import in.srain.cube.views.ptr.header.MaterialHeader;
+import in.srain.cube.views.ptr.util.PtrLocalDisplay;
 
 public class PostsListFragment extends BaseFragment {
 
     private ListView postsList;
-    private PullDownListView pullDownListView;
-    private RelativeLayout layoutHeader, layoutFooter;
-    private YProgressView progressView;
-    private EyeView eyeView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_posts_list, container, false);
-        pullDownListView =
-                (PullDownListView) rootView.findViewById(R.id.posts_list);
-        layoutHeader = (RelativeLayout) rootView.findViewById(R.id.layoutHeader);
-        layoutFooter = (RelativeLayout) rootView.findViewById(R.id.layoutFooter);
-        pullDownListView.setLayoutHeader(layoutHeader);
-        pullDownListView.setLayoutFooter(layoutFooter);
-        progressView = (YProgressView) rootView.findViewById(R.id.progressView);
-        eyeView = (EyeView) rootView.findViewById(R.id.eyeView);
-        postsList = pullDownListView.getListView();
+        final PtrFrameLayout frame = (PtrFrameLayout) rootView.findViewById(R.id.material_style_ptr_frame);
+        // header
+        final MaterialHeader header = new MaterialHeader(mContext);
+        int[] colors = getResources().getIntArray(R.array.google_colors);
+        header.setColorSchemeColors(colors);
+        header.setLayoutParams(new PtrFrameLayout.LayoutParams(-1, -2));
+        header.setPadding(0, PtrLocalDisplay.dp2px(15), 0, PtrLocalDisplay .dp2px(10));
+        header.setPtrFrameLayout(frame);
+
+        frame.setLoadingMinTime(1000);
+        frame.setDurationToCloseHeader(1500);
+        frame.setHeaderView(header);
+        frame.addPtrUIHandler(header);
+
+        frame.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                frame.autoRefresh(false);
+            }
+        }, 100);
+
+
+        postsList = (ListView) rootView.findViewById(R.id.posts_list);
         setupList();
         return rootView;
     }
 
     private void setupList() {
         postsList.setAdapter(createAdapter());
-
-        pullDownListView.setOnPullHeightChangeListener(new PullDownListView.OnPullHeightChangeListener() {
-
-            @Override
-            public void onTopHeightChange(int headerHeight, int pullHeight) {
-                // TODO Auto-generated method stub
-                float progress = (float) pullHeight / (float) headerHeight;
-
-                if (progress < 0.5) {
-                    progress = 0.0f;
-                } else {
-                    progress = (progress - 0.5f) / 0.5f;
-                }
-
-
-                if (progress > 1.0f) {
-                    progress = 1.0f;
-                }
-
-                if (!pullDownListView.isRefreshing()) {
-                    eyeView.setProgress(progress);
-                }
-            }
-
-            @Override
-            public void onBottomHeightChange(int footerHeight, int pullHeight) {
-                // TODO Auto-generated method stub
-                float progress = (float) pullHeight / (float) footerHeight;
-
-                if (progress < 0.5) {
-                    progress = 0.0f;
-                } else {
-                    progress = (progress - 0.5f) / 0.5f;
-                }
-
-                if (progress > 1.0f) {
-                    progress = 1.0f;
-                }
-
-                if (!pullDownListView.isRefreshing()) {
-                    progressView.setProgress(progress);
-                }
-
-            }
-
-            @Override
-            public void onRefreshing(final boolean isTop) {
-                // TODO Auto-generated method stub
-                if (isTop) {
-                    eyeView.startAnimate();
-                } else {
-                    progressView.startAnimate();
-                }
-
-                new Handler().postDelayed(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        // TODO Auto-generated method stub
-                        pullDownListView.pullUp();
-                        if (isTop) {
-                            eyeView.stopAnimate();
-                        } else {
-                            progressView.stopAnimate();
-                        }
-                    }
-
-                }, 3000);
-            }
-
-        });
-
-
         postsList.setOnItemClickListener(new ListItemClickListener());
     }
 
@@ -157,9 +91,5 @@ public class PostsListFragment extends BaseFragment {
         }
     }
 
-    public static int dp2px(Context context, int dp) {
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context
-                .getResources().getDisplayMetrics());
-    }
 
 }

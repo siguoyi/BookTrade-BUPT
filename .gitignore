@@ -5,7 +5,6 @@
 /build
 gradlew.bat
 *.iml
-/library-circular
 /nforum-sdk
 ### Java template
 *.class
@@ -14,7 +13,6 @@ gradlew.bat
 .mtj.tmp/
 
 # Package Files #
-*.jar
 *.war
 *.ear
 
@@ -23,7 +21,6 @@ hs_err_pid*
 
 
 ### Gradle template
-.gradle
 build/
 
 # Ignore Gradle GUI config
@@ -38,8 +35,6 @@ gradle-app.setting
 # Files for the Dalvik VM
 *.dex
 
-# Java class files
-*.class
 
 # Generated files
 bin/
@@ -47,7 +42,6 @@ gen/
 
 # Gradle files
 .gradle/
-build/
 
 # Local configuration file (sdk path, etc)
 local.properties

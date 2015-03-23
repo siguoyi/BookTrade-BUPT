@@ -1,51 +1,32 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/lightgrey"
-    android:paddingLeft="4dp"
-    android:paddingRight="4dp">
+    android:background="@color/lightgrey" >
 
-
-    <com.demievil.pulldownlistview.PullDownListView
-        android:id="@+id/posts_list"
+    <in.srain.cube.views.ptr.PtrFrameLayout
+        android:id="@+id/material_style_ptr_frame"
+        xmlns:cube_ptr="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clipToPadding="false"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="3dp"
-        android:paddingLeft="2dp"
-        android:paddingRight="2dp"
-        android:scrollbarStyle="outsideInset"
-        tools:listitem="@layout/list_item_card">
+        android:layout_height="match_parent"
+        cube_ptr:ptr_duration_to_close="300"
+        cube_ptr:ptr_duration_to_close_header="2000"
+        cube_ptr:ptr_keep_header_when_refresh="true"
+        cube_ptr:ptr_pull_to_fresh="false"
+        cube_ptr:ptr_ratio_of_header_height_to_refresh="1.2"
+        cube_ptr:ptr_resistance="1.7">
 
-        <RelativeLayout
-            android:id="@+id/layoutHeader"
+        <ListView
+            android:id="@+id/posts_list"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_alignParentTop="true">
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="3dp"
+            android:scrollbarStyle="outsideOverlay"
+            tools:listitem="@layout/list_item_card"/>
 
-            <com.demievil.pulldownlistview.EyeView
-                android:id="@+id/eyeView"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_centerHorizontal="true" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/layoutFooter"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_alignParentBottom="true">
-
-            <com.demievil.pulldownlistview.YProgressView
-                android:id="@+id/progressView"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_centerHorizontal="true">
-
-            </com.demievil.pulldownlistview.YProgressView>
-        </RelativeLayout>
         <!--
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -57,5 +38,5 @@
                     style="@style/ProgressBar.Horizontal" />
             </RelativeLayout>
         -->
-    </com.demievil.pulldownlistview.PullDownListView>
+    </in.srain.cube.views.ptr.PtrFrameLayout>
 </FrameLayout>
