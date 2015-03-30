@@ -1,6 +1,5 @@
 package com.bupt.booktrade.activity;
 
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -101,11 +100,10 @@ public class NewPostActivity extends BaseActivity implements View.OnClickListene
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.open_layout:
-                Date date1 = new Date(System.currentTimeMillis());
-                dateTime = date1.getTime() + "";
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setDataAndType(MediaStore.Images.Media.INTERNAL_CONTENT_URI, "image/*");
-                startActivityForResult(intent, REQUEST_CODE_ALBUM);
+                Intent intent = new Intent(Intent.ACTION_PICK);//or ACTION_PICK
+                intent.setType("image/*");//相片类型
+                startActivityForResult(Intent.createChooser(intent,
+                        "Select Picture"), REQUEST_CODE_ALBUM);
                 break;
             case R.id.take_layout:
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -166,19 +164,11 @@ public class NewPostActivity extends BaseActivity implements View.OnClickListene
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case REQUEST_CODE_ALBUM:
-                    String fileName = null;
                     if (data != null) {
                         Uri originalUri = data.getData();
-                        ContentResolver cr = getContentResolver();
-                        Cursor cursor = cr.query(originalUri, null, null, null, null);
-                        if (cursor.moveToFirst()) {
-                            do {
-                                fileName = cursor.getString(cursor.getColumnIndex("_data"));
-                            } while (cursor.moveToNext());
-                        }
-                        LogUtils.d(TAG, fileName);
-                        targeturl = fileName;
-                        imageLoader.displayImage("file://" + fileName, albumPic);
+                        targeturl = getPath(originalUri);
+                        LogUtils.d(TAG, targeturl);
+                        imageLoader.displayImage("file://" + targeturl, albumPic);
                         //takeLayout.setVisibility(View.GONE);
                     }
                     break;
@@ -194,10 +184,33 @@ public class NewPostActivity extends BaseActivity implements View.OnClickListene
         }
     }
 
+    /**
+     * helper to retrieve the path of an image URI
+     */
+    public String getPath(Uri uri) {
+        // just some safety built in
+        if (uri == null) {
+            // TODO perform some logging or show user feedback
+            return null;
+        }
+        // try to retrieve the image from the media store first
+        // this will only work for images selected from gallery
+        String[] projection = {MediaStore.Images.Media.DATA};
+        Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
+        if (cursor != null) {
+            int columnIndex = cursor
+                    .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(columnIndex);
+        }
+        // this is our fallback here
+        cursor.close();
+        return uri.getPath();
+    }
 
-     /*
-         * 发表带图片
-         */
+    /*
+        * 发表带图片
+        */
     private void publish(final String commitContent) {
 
         final BmobFile figureFile = new BmobFile(new File(targeturl));
@@ -252,6 +265,7 @@ public class NewPostActivity extends BaseActivity implements View.OnClickListene
                 setResult(RESULT_OK);
                 onBackPressed();
             }
+
 
             @Override
             public void onFailure(int arg0, String arg1) {

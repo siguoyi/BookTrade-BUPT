@@ -27,7 +27,9 @@ public class ToastUtils{
         mToast.show();
     }
 	public static void clearToast(){
-		mToast.cancel();
+        if (!(mToast == null)) {
+            mToast.cancel();
+        }
 	}
 }
 

@@ -86,7 +86,7 @@ public class MainActivity extends BaseActivity {
             public void onClick(View v) {
                 //drawerPosition = PERSONAL_HOME_LIST_FRAGMENT;
                 //displayView(drawerPosition);
-                Intent intent = new Intent(MainActivity.this, PersonalHomeActivity.class);
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(intent);
                 mDrawerLayout.closeDrawer(mDrawerLinear);
             }
