@@ -21,7 +21,7 @@ public class SettingFragment extends BaseFragment {
         mProgressBar = (ProgressBar) rootView.findViewById(R.id.progressbar_circular);
         mProgressBar.setIndeterminateDrawable(new CircularProgressDrawable
                 .Builder(getActivity())
-                .colors(getResources().getIntArray(R.array.gplus_colors))
+                .colors(getResources().getIntArray(R.array.google_colors))
                 .sweepSpeed(1f)
                 .strokeWidth(5)
                 .style(CircularProgressDrawable.Style.ROUNDED)

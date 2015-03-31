@@ -50,4 +50,21 @@
 
     <!-- Backward-compatible version of ?android:attr/buttonBarButtonStyle -->
     <style name="ButtonBarButton" />
+
+    <!--My Simple Button Feedback-->
+    <style name="ButtonNormal">
+        <item name="android:clickable">true</item>
+        <item name="android:background">@color/cornflowerblue</item>
+    </style>
+
+    <style name="ButtonDisabled">
+        <item name="android:clickable">false</item>
+        <item name="android:alpha">0.7</item>
+        <item name="android:background">@color/cornflowerblue</item>
+    </style>
+
+    <style name="ButtonClicked">
+        <item name="android:clickable">true</item>
+        <item name="android:colorPressedHighlight">@color/blue</item>
+    </style>
 </resources>

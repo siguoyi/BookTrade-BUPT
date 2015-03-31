@@ -2,8 +2,8 @@ package com.bupt.booktrade.activity;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -15,14 +15,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.bupt.booktrade.MyApplication;
 import com.bupt.booktrade.R;
 import com.bupt.booktrade.entity.Post;
 import com.bupt.booktrade.entity.User;
 import com.bupt.booktrade.utils.LogUtils;
 import com.bupt.booktrade.utils.ToastUtils;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,6 +38,7 @@ public class NewPostActivity extends BaseActivity implements View.OnClickListene
     private static final int REQUEST_CODE_ALBUM = 1;
     private static final int REQUEST_CODE_CAMERA = 2;
 
+    public boolean isSending = false;
     EditText content;
 
     LinearLayout openLayout;
@@ -47,11 +47,7 @@ public class NewPostActivity extends BaseActivity implements View.OnClickListene
     ImageView albumPic;
     ImageView takePic;
 
-    String dateTime;
-    String targeturl = null;
-
-    ImageLoader imageLoader;
-    DisplayImageOptions options;
+    String targetUrl = null;
 
     String mCurrentPhotoPath;
 
@@ -59,9 +55,10 @@ public class NewPostActivity extends BaseActivity implements View.OnClickListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_post);
-        getActionBar().setTitle(R.string.title_activity_new_post);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            getActionBar().setTitle(R.string.title_activity_new_post);
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         content = (EditText) findViewById(R.id.new_post_content);
         openLayout = (LinearLayout) findViewById(R.id.open_layout);
         takeLayout = (LinearLayout) findViewById(R.id.take_layout);
@@ -72,21 +69,14 @@ public class NewPostActivity extends BaseActivity implements View.OnClickListene
         openLayout.setOnClickListener(this);
         takeLayout.setOnClickListener(this);
 
-        imageLoader = ImageLoader.getInstance();
-        setImageLoaderOptions();
     }
 
-    private void setImageLoaderOptions() {
-        options = new DisplayImageOptions.Builder()
-                .showImageForEmptyUri(R.drawable.ic_launcher)//设置图片Uri为空或是错误的时候显示的图片
-                .showImageForEmptyUri(R.drawable.ic_launcher)
-                .showImageOnFail(R.drawable.ic_launcher)  //设置图片加载/解码过程中错误时候显示的图片
-                .cacheInMemory(true)//设置下载的图片是否缓存在内存中
-                .cacheOnDisc(true)//设置下载的图片是否缓存在SD卡中
-                .considerExifParams(true)  //是否考虑JPEG图像EXIF参数（旋转，翻转）
-                .imageScaleType(ImageScaleType.EXACTLY_STRETCHED)//设置图片以如何的编码方式显示
-                .bitmapConfig(Bitmap.Config.RGB_565)//设置图片的解码类型//
-                .build();//构建完成
+
+    @Override
+    protected void onStop() {
+        ImageLoader.getInstance().clearMemoryCache();
+        ImageLoader.getInstance().clearDiskCache();
+        super.onStop();
     }
 
     @Override
@@ -166,17 +156,17 @@ public class NewPostActivity extends BaseActivity implements View.OnClickListene
                 case REQUEST_CODE_ALBUM:
                     if (data != null) {
                         Uri originalUri = data.getData();
-                        targeturl = getPath(originalUri);
-                        LogUtils.d(TAG, targeturl);
-                        imageLoader.displayImage("file://" + targeturl, albumPic);
+                        targetUrl = getPath(originalUri);
+                        LogUtils.d(TAG, targetUrl);
+                        ImageLoader.getInstance().displayImage("file://" + targetUrl, albumPic, MyApplication.getMyApplication().setOptions(R.drawable.open_picture));
                         //takeLayout.setVisibility(View.GONE);
                     }
                     break;
                 case REQUEST_CODE_CAMERA:
                     galleryAddPic();
                     LogUtils.d(TAG, mCurrentPhotoPath);
-                    targeturl = mCurrentPhotoPath;
-                    imageLoader.displayImage("file://" + mCurrentPhotoPath, takePic);
+                    targetUrl = mCurrentPhotoPath;
+                    ImageLoader.getInstance().displayImage("file://" + mCurrentPhotoPath, takePic, MyApplication.getMyApplication().setOptions(R.drawable.take_picture));
                     break;
                 default:
                     break;
@@ -213,7 +203,7 @@ public class NewPostActivity extends BaseActivity implements View.OnClickListene
         */
     private void publish(final String commitContent) {
 
-        final BmobFile figureFile = new BmobFile(new File(targeturl));
+        final BmobFile figureFile = new BmobFile(new File(targetUrl));
         figureFile.upload(mContext, new UploadFileListener() {
 
             @Override
@@ -258,18 +248,33 @@ public class NewPostActivity extends BaseActivity implements View.OnClickListene
         post.save(mContext, new SaveListener() {
 
             @Override
+            public void onStart() {
+                LogUtils.i(TAG, "start sending");
+                super.onStart();
+            }
+
+            @Override
             public void onSuccess() {
                 // TODO Auto-generated method stub
+
                 ToastUtils.showToast(mContext, "发布成功", Toast.LENGTH_SHORT);
                 LogUtils.i(TAG, "创建成功。");
                 setResult(RESULT_OK);
-                onBackPressed();
             }
 
+            @Override
+            public void onFinish() {
+                isSending = false;
+                invalidateOptionsMenu();
+                onBackPressed();
+                super.onFinish();
+            }
 
             @Override
             public void onFailure(int arg0, String arg1) {
                 // TODO Auto-generated method stub
+                isSending = false;
+                invalidateOptionsMenu();
                 ToastUtils.showToast(mContext, "发布失败！" + arg1, Toast.LENGTH_SHORT);
                 LogUtils.i(TAG, "创建失败。" + arg1);
             }
@@ -279,7 +284,12 @@ public class NewPostActivity extends BaseActivity implements View.OnClickListene
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_new_post, menu);
+        if (!isSending) {
+            getMenuInflater().inflate(R.menu.menu_new_post, menu);
+        } else {
+            getMenuInflater().inflate(R.menu.menu_progress, menu);
+        }
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -291,16 +301,24 @@ public class NewPostActivity extends BaseActivity implements View.OnClickListene
         int id = item.getItemId();
         switch (id) {
             case R.id.action_send_post:
-                String commitContent = content.getText().toString().trim();
+                final String commitContent = content.getText().toString().trim();
                 if (commitContent.isEmpty()) {
                     ToastUtils.showToast(mContext, "内容不能为空", Toast.LENGTH_SHORT);
                     return true;
                 }
-                if (targeturl == null) {
-                    publishWithoutFigure(commitContent, null);
-                } else {
-                    publish(commitContent);
-                }
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (targetUrl == null) {
+                            publishWithoutFigure(commitContent, null);
+                        } else {
+                            publish(commitContent);
+                        }
+                    }
+                }).start();
+
+                isSending = true;
+                invalidateOptionsMenu();
                 ToastUtils.showToast(mContext, "发布中...", Toast.LENGTH_SHORT);
                 return true;
             default:

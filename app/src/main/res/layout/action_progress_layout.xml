@@ -9,7 +9,7 @@
         android:id="@+id/action_progressbar_circular"
         android:layout_centerInParent="true"
         style="@style/ProgressBar.Horizontal"
-        app:cpb_colors="@array/gplus_colors"
+        app:cpb_colors="@array/google_colors"
         app:cpb_rotation_speed="1.0"
         app:cpb_sweep_speed="1.0"
         app:cpb_stroke_width="3dp"

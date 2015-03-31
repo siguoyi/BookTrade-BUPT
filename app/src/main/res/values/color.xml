@@ -148,7 +148,10 @@
     <color name="darkblue">#00008B</color>
     <color name="navy">#000080</color>
     <color name="black">#000000</color>
-
+    <color name="google_red">#d62d20</color>
+    <color name="google_blue">#0057e7</color>
+    <color name="google_green">#008744</color>
+    <color name="google_yellow">#ffa700</color>
 <integer-array name="colors">
     <item>@color/holo_blue_dark</item>
     <item>@color/holo_yellow_dark</item>
@@ -188,11 +191,6 @@
 <color name="pocket_color_2">#34bdb7</color>
 <color name="pocket_color_3">#ee4458</color>
 <color name="pocket_color_4">#fcb74d</color>
-
-<color name="gplus_color_1">#3e802f</color>
-<color name="gplus_color_2">#f4b400</color>
-<color name="gplus_color_3">#427fed</color>
-<color name="gplus_color_4">#b23424</color>
 
 <color name="holo_blue_dark">#0099cc</color>
 <color name="holo_yellow_dark">#ff8800</color>

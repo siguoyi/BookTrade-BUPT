@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer-array name="google_colors">
-        <item>@color/red</item>
-        <item>@color/blue</item>
-        <item>@color/yellow</item>
-        <item>@color/green</item>
+        <item>@color/google_red</item>
+        <item>@color/google_blue</item>
+        <item>@color/google_green</item>
+        <item>@color/google_yellow</item>
     </integer-array>
 
     <!-- Nav Drawer Menu Items -->
@@ -25,10 +25,5 @@
         <item>@drawable/ic_pages</item>
         <item>@drawable/ic_whats_hot</item>
     </array>
-    <integer-array name="gplus_colors">
-        <item>@color/gplus_color_1</item>
-        <item>@color/gplus_color_2</item>
-        <item>@color/gplus_color_3</item>
-        <item>@color/gplus_color_4</item>
-    </integer-array>
+
 </resources>
