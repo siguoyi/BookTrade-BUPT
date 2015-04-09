@@ -1,6 +1,7 @@
 package com.bupt.booktrade.entity;
 
-import cn.bmob.v3.Bmob;
+import com.bupt.booktrade.utils.Constant;
+
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.datatype.BmobRelation;
@@ -13,7 +14,7 @@ public class User extends BmobUser {
     private String signature;
     private BmobFile avatar;
     private BmobRelation favorite;
-    private String sex;
+    private String sex = Constant.SEX_MALE;
 
     public String getSex() {
         return sex;

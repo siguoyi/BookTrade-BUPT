@@ -23,7 +23,7 @@ public class UserProxy {
 		user.setUsername(userName);
 		user.setPassword(password);
 		user.setEmail(email);
-		user.setSex(Constant.SEX_FEMALE);
+		user.setSex(Constant.SEX_MALE);
 		user.setSignature("");
 		user.signUp(mContext, new SaveListener() {
 			

@@ -82,7 +82,6 @@
             android:paddingRight="32dp"
             android:text="评论"
             android:textColor="@color/white"
-            android:textSize="18sp"
-            />
+            android:textSize="18sp" />
     </LinearLayout>
 </RelativeLayout>

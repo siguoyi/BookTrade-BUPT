@@ -2,8 +2,10 @@ package com.bupt.booktrade.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -44,7 +46,6 @@ public class PostsListFragment extends BaseFragment implements SwipeRefreshLayou
     private ArrayList<Post> mListItems;
     private CardsAdapter mAdapter;
 
-    private Handler handler;
     public enum RefreshType {
         REFRESH, LOAD_MORE
     }
@@ -76,9 +77,16 @@ public class PostsListFragment extends BaseFragment implements SwipeRefreshLayou
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+        mListItems = new ArrayList<>();
+        pageNum = 0;
+        lastItemTime = getCurrentTime();
+        LogUtils.i(TAG, "current time:" + lastItemTime);
+        if (mListItems.size() == 0) {
+            new FetchDataTask().execute();
+        }
         //currentIndex = getArguments().getInt("page");
         LogUtils.i(TAG, "onCreate");
-
     }
 
     @Override
@@ -89,16 +97,15 @@ public class PostsListFragment extends BaseFragment implements SwipeRefreshLayou
         mSwipeRefreshLayout.setColorSchemeResources(R.color.google_red, R.color.google_blue, R.color.google_green, R.color.google_yellow);
         mSwipeRefreshLayout.setDistanceToTriggerSync(400);
         mSwipeRefreshLayout.setOnRefreshListener(this);
-        mListItems = new ArrayList<>();
-        pageNum = 0;
-        lastItemTime = getCurrentTime();
-        handler = new Handler();
-        LogUtils.i(TAG, "current time:" + lastItemTime);
-        if (mListItems.size() == 0) {
-            fetchData();
-        }
+
         setupList();
         return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+
+        super.onActivityCreated(savedInstanceState);
     }
 
     private void setupList() {
@@ -112,12 +119,8 @@ public class PostsListFragment extends BaseFragment implements SwipeRefreshLayou
 
         // TODO Auto-generated method stub
         mRefreshType = RefreshType.REFRESH;
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                fetchData();
-            }
-        }).start();
+
+        new FetchDataTask().execute();
 
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -164,14 +167,12 @@ public class PostsListFragment extends BaseFragment implements SwipeRefreshLayou
                 } else {
                     ToastUtils.showToast(mContext, "暂无更多数据", Toast.LENGTH_SHORT);
                     pageNum--;
-                    handler.post(dismissProgress);
                 }
             }
 
             @Override
             public void onFinish() {
                 mAdapter.notifyDataSetChanged();
-                handler.post(dismissProgress);
                 super.onFinish();
             }
 
@@ -180,22 +181,36 @@ public class PostsListFragment extends BaseFragment implements SwipeRefreshLayou
                 // TODO Auto-generated method stub
                 LogUtils.i(TAG, "find failed:" + s);
                 pageNum--;
-                handler.post(dismissProgress);
             }
         });
     }
 
 
-    Runnable dismissProgress = new  Runnable(){
+
+    private class FetchDataTask extends AsyncTask<Void, Integer, Integer> {
+
         @Override
-        public void run() {
-            //更新界面
+        protected Integer doInBackground(Void... params) {
+            fetchData();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            super.onPostExecute(integer);
             if (mSwipeRefreshLayout.isRefreshing()) {
                 mSwipeRefreshLayout.setRefreshing(false);
             }
         }
 
-    };
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+            if (mSwipeRefreshLayout.isRefreshing()) {
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        }
+    }
 
     private final class ListItemClickListener implements OnItemClickListener {
         @Override

@@ -3,9 +3,11 @@ package com.bupt.booktrade.activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -58,6 +60,7 @@ public class NewPostActivity extends BaseActivity implements View.OnClickListene
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             getActionBar().setTitle(R.string.title_activity_new_post);
             getActionBar().setDisplayHomeAsUpEnabled(true);
+            getActionBar().setHomeButtonEnabled(true);
         }
         content = (EditText) findViewById(R.id.new_post_content);
         openLayout = (LinearLayout) findViewById(R.id.open_layout);
@@ -79,12 +82,6 @@ public class NewPostActivity extends BaseActivity implements View.OnClickListene
         super.onStop();
     }
 
-    @Override
-    public void onBackPressed() {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-        super.onBackPressed();
-    }
 
     @Override
     public void onClick(View v) {
@@ -256,17 +253,17 @@ public class NewPostActivity extends BaseActivity implements View.OnClickListene
             @Override
             public void onSuccess() {
                 // TODO Auto-generated method stub
-
+                LogUtils.i(TAG, "创建成功");
                 ToastUtils.showToast(mContext, "发布成功", Toast.LENGTH_SHORT);
-                LogUtils.i(TAG, "创建成功。");
                 setResult(RESULT_OK);
+                isSending = false;
+                invalidateOptionsMenu();
+                onBackPressed();
+
             }
 
             @Override
             public void onFinish() {
-                isSending = false;
-                invalidateOptionsMenu();
-                onBackPressed();
                 super.onFinish();
             }
 
@@ -306,23 +303,48 @@ public class NewPostActivity extends BaseActivity implements View.OnClickListene
                     ToastUtils.showToast(mContext, "内容不能为空", Toast.LENGTH_SHORT);
                     return true;
                 }
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (targetUrl == null) {
-                            publishWithoutFigure(commitContent, null);
-                        } else {
-                            publish(commitContent);
-                        }
-                    }
-                }).start();
-
                 isSending = true;
                 invalidateOptionsMenu();
-                ToastUtils.showToast(mContext, "发布中...", Toast.LENGTH_SHORT);
+                new SendPostTask().execute(commitContent);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        isSending = false;
+                        invalidateOptionsMenu();
+                    }
+                }, 15000);
                 return true;
-            default:
-                return super.onOptionsItemSelected(item);
+
+            case R.id.home:
+                onBackPressed();
+                return true;
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private class SendPostTask extends AsyncTask<String, Integer, Integer> {
+
+        @Override
+        protected Integer doInBackground(String... params) {
+            if (targetUrl == null) {
+                publishWithoutFigure(params[0], null);
+            } else {
+                publish(params[0]);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            super.onPostExecute(integer);
+        }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+            isSending = false;
+            invalidateOptionsMenu();
         }
     }
 }

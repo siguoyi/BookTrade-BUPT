@@ -5,7 +5,6 @@ import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -48,6 +47,9 @@ public class MainActivity extends BaseActivity {
     // slide menu items
     private String[] navMenuTitles;
 
+    private static final int TIME_INTERVAL = 2000;
+    private long mBackPressed;
+
     private static final int PERSONAL_HOME_LIST_FRAGMENT = -1;
     private static final int POSTS_LIST_FRAGMENT = 0;
     private static final int NEW_POST_FRAGMENT = 1;
@@ -57,13 +59,12 @@ public class MainActivity extends BaseActivity {
 
     private int drawerPosition = POSTS_LIST_FRAGMENT;//默认显示首页
 
-    private boolean doubleBackToExitPressedOnce = false;
-
     private Fragment fragment = null;
-    private PostsListFragment postsListFragment = new PostsListFragment();
-    private MessageFragment messageFragment = new MessageFragment();
-    private SettingFragment settingFragment = new SettingFragment();
-    private AboutFragment aboutFragment = new AboutFragment();
+    private PostsListFragment postsListFragment;
+    private MessageFragment messageFragment;
+    private SettingFragment settingFragment;
+    private AboutFragment aboutFragment;
+    private FragmentTransaction transaction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +73,10 @@ public class MainActivity extends BaseActivity {
 
         LogUtils.i(TAG, "onCreate");
         mTitle = mDrawerTitle = getTitle();
-
+        postsListFragment = new PostsListFragment();
+        messageFragment = new MessageFragment();
+        settingFragment = new SettingFragment();
+        aboutFragment = new AboutFragment();
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLinear = (LinearLayout) findViewById(R.id.drawer_linear_layout);
         mDrawerUserHeader = (LinearLayout) findViewById(R.id.drawer_user_header);
@@ -85,8 +89,6 @@ public class MainActivity extends BaseActivity {
         mDrawerUserHeader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //drawerPosition = PERSONAL_HOME_LIST_FRAGMENT;
-                //displayView(drawerPosition);
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(intent);
                 mDrawerLayout.closeDrawer(mDrawerLinear);
@@ -119,7 +121,7 @@ public class MainActivity extends BaseActivity {
 
         if (savedInstanceState == null) {
             // on first time display view for first nav item
-            displayView(drawerPosition);
+            displayView(POSTS_LIST_FRAGMENT);
         }
     }
 
@@ -156,7 +158,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        doubleBackToExitPressedOnce = false;
+        mBackPressed = 0L;
         displayView(drawerPosition);
     }
 
@@ -165,27 +167,19 @@ public class MainActivity extends BaseActivity {
      */
     @Override
     public void onBackPressed() {
-
         if (mDrawerLayout.isDrawerOpen(mDrawerLinear)) {
             mDrawerLayout.closeDrawer(mDrawerLinear);
         } else {
-            if (doubleBackToExitPressedOnce) {
+            if (System.currentTimeMillis() - mBackPressed <= TIME_INTERVAL) {
                 ToastUtils.clearToast();
                 MyApplication.getMyApplication().exit();
-                finish();
+                //finish();
                 super.onBackPressed();
                 return;
-
+            } else {
+                ToastUtils.showToast(this, R.string.one_more_back, Toast.LENGTH_SHORT);
+                mBackPressed = System.currentTimeMillis();
             }
-            this.doubleBackToExitPressedOnce = true;
-            ToastUtils.showToast(this, R.string.one_more_back, Toast.LENGTH_SHORT);
-
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    doubleBackToExitPressedOnce = false;
-                }
-            }, 2000);
         }
     }
 
@@ -202,11 +196,11 @@ public class MainActivity extends BaseActivity {
             return true;
         }
         // Handle action bar actions click
-      //  switch (item.getItemId()) {
+        //  switch (item.getItemId()) {
         //    case R.id.action_settings:
-         //       return true;
-          //  default:
-                return super.onOptionsItemSelected(item);
+        //       return true;
+        //  default:
+        return super.onOptionsItemSelected(item);
         //}
     }
 
@@ -232,10 +226,11 @@ public class MainActivity extends BaseActivity {
                 fragment = postsListFragment;
                 break;
             case NEW_POST_FRAGMENT:
+                drawerPosition = POSTS_LIST_FRAGMENT;
+                mDrawerLayout.closeDrawer(mDrawerLinear);
                 Intent intent = new Intent(MainActivity.this, NewPostActivity.class);
                 startActivity(intent);
-                mDrawerLayout.closeDrawer(mDrawerLinear);
-                break;
+                return;
             case MESSAGE_FRAGMENT:
                 fragment = messageFragment;
                 break;
@@ -250,21 +245,24 @@ public class MainActivity extends BaseActivity {
         }
 
         if (fragment != null) {
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.frame_container_main, fragment);
-            transaction.addToBackStack(null);
-            transaction.commit();
-
-            // update selected item and title, then close the drawer
-            mDrawerList.setItemChecked(position, true);
-            mDrawerList.setSelection(position);
-            setTitle(navMenuTitles[position]);
-
-            mDrawerLayout.closeDrawer(mDrawerLinear);
+            if (fragment.isAdded()) {
+                transaction = getSupportFragmentManager().beginTransaction();
+                transaction.addToBackStack(null);
+                transaction.show(fragment).commit();
+            } else {
+                transaction = getSupportFragmentManager().beginTransaction();
+                transaction.addToBackStack(null);
+                transaction.replace(R.id.frame_container_main, fragment).commit();
+            }
         } else {
             // error in creating fragment
             LogUtils.e("MainActivity", "Error in creating fragment");
         }
+        // update selected item and title, then close the drawer
+        mDrawerList.setItemChecked(position, true);
+        mDrawerList.setSelection(position);
+        setTitle(navMenuTitles[position]);
+        mDrawerLayout.closeDrawer(mDrawerLinear);
     }
 
     @Override

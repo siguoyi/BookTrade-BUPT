@@ -57,7 +57,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         confirmButton.setOnClickListener(this);
         getActionBar().setTitle(R.string.title_activity_login);
         getActionBar().setDisplayHomeAsUpEnabled(true);
-
         userProxy = new UserProxy(mContext);
 
         textWatcher = new TextWatcher() {
@@ -112,6 +111,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         int id = item.getItemId();
         switch (id) {
             case R.id.action_progress:
+                return true;
+            case R.id.home:
+                super.onBackPressed();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -184,6 +186,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         ToastUtils.showToast(mContext, R.string.login_successfully, Toast.LENGTH_SHORT);
         setResult(RESULT_OK);
         LogUtils.i(TAG, "login successfully: " + userProxy.getCurrentUser().getUsername());
+        onBackPressed();
         //finish();
     }
 

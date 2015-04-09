@@ -67,8 +67,8 @@ public class DatabaseUtil {
         cursor = dbHelper.query(DBHelper.TABLE_NAME, null, where, null, null, null, null);
         if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
-            int isLove = cursor.getInt(cursor.getColumnIndex(FavTable.IS_LOVE));
-            if (isLove == 0) {
+            int isFav = cursor.getInt(cursor.getColumnIndex(FavTable.IS_FAV));
+            if (isFav == 0) {
                 dbHelper.delete(DBHelper.TABLE_NAME, where, null);
             } else {
                 ContentValues cv = new ContentValues();
@@ -107,13 +107,13 @@ public class DatabaseUtil {
             cursor.moveToFirst();
             ContentValues conv = new ContentValues();
             conv.put(FavTable.IS_FAV, 1);
-            conv.put(FavTable.IS_LOVE, 1);
+            //conv.put(FavTable.IS_LOVE, 1);
             dbHelper.update(DBHelper.TABLE_NAME, conv, where, null);
         } else {
             ContentValues cv = new ContentValues();
             cv.put(FavTable.USER_ID, MyApplication.getMyApplication().getCurrentUser().getObjectId());
             cv.put(FavTable.OBJECT_ID, post.getObjectId());
-            cv.put(FavTable.IS_LOVE, post.getMyLove() == true ? 1 : 0);
+            //cv.put(FavTable.IS_LOVE, post.getMyLove() == true ? 1 : 0);
             cv.put(FavTable.IS_FAV, post.getMyFav() == true ? 1 : 0);
             uri = dbHelper.insert(DBHelper.TABLE_NAME, null, cv);
         }
@@ -153,11 +153,11 @@ public class DatabaseUtil {
                     } else {
                         content.setMyFav(false);
                     }
-                    if (cursor.getInt(cursor.getColumnIndex(FavTable.IS_LOVE)) == 1) {
-                        content.setMyLove(true);
-                    } else {
-                        content.setMyLove(false);
-                    }
+//                    if (cursor.getInt(cursor.getColumnIndex(FavTable.IS_LOVE)) == 1) {
+//                        content.setMyLove(true);
+//                    } else {
+//                        content.setMyLove(false);
+//                    }
                 }
                 LogUtils.i(TAG, content.getMyFav() + ".." + content.getMyLove());
             }
