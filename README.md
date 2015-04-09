@@ -1,8 +1,9 @@
 # BookTrade-BUPT
-北邮人论坛“二手书交易”版面的Android客户端。（developing）
+An Android app for BUPT students to post information of their used books.（developing）
 
-----------
-## 使用到的开源库 ##
-
+## Thanks ##
 
 - [SmoothProgressBar](https://github.com/castorflex/SmoothProgressBar)
+- [Android Universal Image Loader](https://github.com/nostra13/Android-Universal-Image-Loader)
+- [Float Labeled EditText](https://github.com/wrapp/floatlabelededittext)
+- [Wonderful2](https://github.com/bmob/Wonderful2)
