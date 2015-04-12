@@ -8,13 +8,13 @@ import android.support.v4.app.Fragment;
  * Created by LiuYan on 2015/3/18.
  */
 public class BaseFragment extends Fragment {
-    public static String TAG;
+    //public static String TAG;
     protected Context mContext;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        TAG = this.getClass().getSimpleName();
+        //TAG = this.getClass().getSimpleName();
         mContext = getActivity();
     }
 

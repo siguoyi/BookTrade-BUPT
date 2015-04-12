@@ -37,6 +37,8 @@ import cn.bmob.v3.listener.UploadFileListener;
 
 public class NewPostActivity extends BaseActivity implements View.OnClickListener {
 
+    private String TAG;
+
     private static final int REQUEST_CODE_ALBUM = 1;
     private static final int REQUEST_CODE_CAMERA = 2;
 
@@ -57,6 +59,7 @@ public class NewPostActivity extends BaseActivity implements View.OnClickListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_post);
+        TAG = getClass().getSimpleName();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             getActionBar().setTitle(R.string.title_activity_new_post);
             getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -82,6 +85,13 @@ public class NewPostActivity extends BaseActivity implements View.OnClickListene
         super.onStop();
     }
 
+    @Override
+    public void onBackPressed() {
+        LogUtils.d(TAG, "onBackPressed()");
+        super.onBackPressed();
+        Intent intent = new Intent(NewPostActivity.this, MainActivity.class);
+        startActivity(intent);
+    }
 
     @Override
     public void onClick(View v) {

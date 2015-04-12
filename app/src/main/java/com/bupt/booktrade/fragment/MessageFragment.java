@@ -9,6 +9,13 @@ import com.bupt.booktrade.R;
 
 public class MessageFragment extends BaseFragment {
 
+    private String TAG;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        TAG = getClass().getSimpleName();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

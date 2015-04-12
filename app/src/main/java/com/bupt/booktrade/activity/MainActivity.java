@@ -13,8 +13,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bupt.booktrade.MyApplication;
@@ -25,19 +27,25 @@ import com.bupt.booktrade.fragment.MessageFragment;
 import com.bupt.booktrade.fragment.PostsListFragment;
 import com.bupt.booktrade.fragment.SettingFragment;
 import com.bupt.booktrade.fragment.model.NavDrawerItem;
+import com.bupt.booktrade.utils.Constant;
 import com.bupt.booktrade.utils.LogUtils;
 import com.bupt.booktrade.utils.ToastUtils;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
 
 
 public class MainActivity extends BaseActivity {
+
+    private String TAG;
     private DrawerLayout mDrawerLayout;
     private LinearLayout mDrawerLinear;
     private LinearLayout mDrawerUserHeader;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
 
+    private ImageView drawerUserAvatar;
+    private TextView drawerUsername;
     // nav drawer title
     private CharSequence mTitle;
 
@@ -70,36 +78,50 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        TAG = getClass().getSimpleName();
         LogUtils.i(TAG, "onCreate");
-        mTitle = mDrawerTitle = getTitle();
+
+        initViews();
+        setListeners();
+
         postsListFragment = new PostsListFragment();
         messageFragment = new MessageFragment();
         settingFragment = new SettingFragment();
         aboutFragment = new AboutFragment();
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerLinear = (LinearLayout) findViewById(R.id.drawer_linear_layout);
-        mDrawerUserHeader = (LinearLayout) findViewById(R.id.drawer_user_header);
-        mDrawerList = (ListView) findViewById(R.id.drawer_list_item);
 
-        initNavDrawerItems();
+        if (savedInstanceState == null) {
+            // on first time display view for first nav item
+            displayView(POSTS_LIST_FRAGMENT);
+        }
+    }
 
-        mDrawerList.setOnItemClickListener(new SlideMenuClickListener());
 
-        mDrawerUserHeader.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(intent);
-                mDrawerLayout.closeDrawer(mDrawerLinear);
-            }
-        });
-
+    private void initViews() {
+        mTitle = mDrawerTitle = getTitle();
         // enabling action bar app icon and behaving it as toggle button
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             getActionBar().setDisplayHomeAsUpEnabled(true);
             getActionBar().setHomeButtonEnabled(true);
         }
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLinear = (LinearLayout) findViewById(R.id.drawer_linear_layout);
+        mDrawerUserHeader = (LinearLayout) findViewById(R.id.drawer_user_header);
+        mDrawerList = (ListView) findViewById(R.id.drawer_list_item);
+
+        drawerUserAvatar = (ImageView) findViewById(R.id.drawer_user_avatar);
+        drawerUsername = (TextView) findViewById(R.id.drawer_user_name);
+        if (MyApplication.getMyApplication().getCurrentUser() != null) {
+            if (MyApplication.getMyApplication().getCurrentUser().getAvatar() != null) {
+                String avatarUrl = MyApplication.getMyApplication().getCurrentUser().getAvatar().getFileUrl(this);
+                int defaultAvatar = MyApplication.getMyApplication().getCurrentUser().getSex().equals(Constant.SEX_MALE) ? R.drawable.avatar_default_m : R.drawable.avatar_default_f;
+                ImageLoader.getInstance().displayImage(avatarUrl, drawerUserAvatar,
+                        MyApplication.getMyApplication().setOptions(defaultAvatar));
+            }
+            if (MyApplication.getMyApplication().getCurrentUser().getUsername() != null) {
+                drawerUsername.setText(MyApplication.getMyApplication().getCurrentUser().getUsername());
+            }
+        }
+
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
                 R.drawable.ic_drawer, //nav menu toggle icon
                 R.string.app_name, // nav drawer open - description for accessibility
@@ -117,12 +139,8 @@ public class MainActivity extends BaseActivity {
                 invalidateOptionsMenu();
             }
         };
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-        if (savedInstanceState == null) {
-            // on first time display view for first nav item
-            displayView(POSTS_LIST_FRAGMENT);
-        }
+        initNavDrawerItems();
     }
 
 
@@ -154,9 +172,31 @@ public class MainActivity extends BaseActivity {
         mDrawerList.setAdapter(adapter);
     }
 
+    private void setListeners() {
+        mDrawerList.setOnItemClickListener(new SlideMenuClickListener());
+        mDrawerUserHeader.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mDrawerLayout.isDrawerOpen(mDrawerLinear)) {
+                    mDrawerLayout.closeDrawer(mDrawerLinear);
+                }
+                if (MyApplication.getMyApplication().getCurrentUser() == null) {
+                    ToastUtils.showToast(MainActivity.this, "请先登录", Toast.LENGTH_SHORT);
+                    Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivity(loginIntent);
+                } else {
+                    Intent personalPageIntent = new Intent(MainActivity.this, PersonalHomeActivity.class);
+                    startActivity(personalPageIntent);
+                }
+            }
+        });
+
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+    }
 
     @Override
     protected void onResume() {
+        LogUtils.d(TAG, "onResume()");
         super.onResume();
         mBackPressed = 0L;
         displayView(drawerPosition);
@@ -298,8 +338,8 @@ public class MainActivity extends BaseActivity {
         public void onItemClick(AdapterView<?> parent, View view, int position,
                                 long id) {
             // display view for selected nav drawer item
-            displayView(position);
             drawerPosition = position;
+            displayView(position);
         }
     }
 

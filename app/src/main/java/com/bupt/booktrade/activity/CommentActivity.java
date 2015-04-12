@@ -48,7 +48,7 @@ import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UpdateListener;
 
 public class CommentActivity extends BaseActivity implements View.OnClickListener {
-
+    private String TAG;
     private ListView commentList;
     private TextView loadMore;
     private EditText commentContent;
@@ -86,11 +86,12 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        TAG = getClass().getSimpleName();
         setContentView(R.layout.activity_comment);
         getActionBar().setTitle(R.string.title_activity_comment);
         getActionBar().setDisplayHomeAsUpEnabled(true);
         findViews();
-        setListener();
+        setListeners();
         setupViews(savedInstanceState);
     }
 
@@ -128,7 +129,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         commentPost = (LinearLayout) findViewById(R.id.post_comment);
     }
 
-    protected void setListener() {
+    protected void setListeners() {
         // TODO Auto-generated method stub
         loadMore.setOnClickListener(this);
         commentCommit.setOnClickListener(this);
@@ -196,6 +197,8 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         userName.setText(post.getAuthor().getUsername());
         //标题
         postTitle.setText(post.getContent());
+        //时间戳
+        timeStamp.setText(post.getCreatedAt());
         //图片
         if (null == post.getContentfigureurl()) {
             postPics.setVisibility(View.GONE);

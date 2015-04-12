@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bupt.booktrade.MyApplication;
@@ -37,7 +38,9 @@ import cn.bmob.v3.listener.FindListener;
 
 public class PostsListFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
 
+    private String TAG;
     private ListView postsList;
+    private TextView postsLoading;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private int pageNum;
     private int currentIndex;
@@ -77,6 +80,7 @@ public class PostsListFragment extends BaseFragment implements SwipeRefreshLayou
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        TAG = getClass().getSimpleName();
         setRetainInstance(true);
         mListItems = new ArrayList<>();
         pageNum = 0;
@@ -92,7 +96,10 @@ public class PostsListFragment extends BaseFragment implements SwipeRefreshLayou
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_posts_list, container, false);
+        LogUtils.i(TAG, "onCreateView");
         postsList = (ListView) rootView.findViewById(R.id.cards_list);
+        postsLoading = (TextView) rootView.findViewById(R.id.posts_loading);
+
         mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_container);
         mSwipeRefreshLayout.setColorSchemeResources(R.color.google_red, R.color.google_blue, R.color.google_green, R.color.google_yellow);
         mSwipeRefreshLayout.setDistanceToTriggerSync(400);
@@ -152,6 +159,7 @@ public class PostsListFragment extends BaseFragment implements SwipeRefreshLayou
                 // TODO Auto-generated method stub
                 LogUtils.i(TAG, "time:" + getCurrentTime());
                 LogUtils.i(TAG, "find success:" + list.size());
+                postsLoading.setVisibility(View.GONE);
                 if (list.size() != 0 && list.get(list.size() - 1) != null) {
                     if (mRefreshType == RefreshType.REFRESH) {
                         mListItems.clear();
@@ -172,6 +180,7 @@ public class PostsListFragment extends BaseFragment implements SwipeRefreshLayou
 
             @Override
             public void onFinish() {
+                postsLoading.setVisibility(View.GONE);
                 mAdapter.notifyDataSetChanged();
                 super.onFinish();
             }

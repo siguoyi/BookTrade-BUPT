@@ -1,5 +1,6 @@
 package com.bupt.booktrade.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -23,6 +24,7 @@ import com.wrapp.floatlabelededittext.FloatLabeledEditText;
  */
 public class LoginActivity extends BaseActivity implements View.OnClickListener, UserProxy.ILoginListener, UserProxy.ISignUpListener {
 
+    private String TAG;
     private EditText email, userName, passWord;
     private Button confirmButton;
     private TextView register;
@@ -41,7 +43,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
+        TAG = getClass().getSimpleName();
         email = (EditText) findViewById(R.id.login_email);
         userName = (EditText) findViewById(R.id.login_user_name);
         passWord = (EditText) findViewById(R.id.login_pass_word);
@@ -97,6 +99,14 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         passWord.addTextChangedListener(textWatcher);
     }
 
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        startActivity(intent);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_progress, menu);
@@ -113,7 +123,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
             case R.id.action_progress:
                 return true;
             case R.id.home:
-                super.onBackPressed();
+                onBackPressed();
                 return true;
         }
         return super.onOptionsItemSelected(item);

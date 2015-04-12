@@ -94,6 +94,7 @@ public class CardsAdapter extends BaseAdapter {
 
         final Post post = dataList.get(position);
         User user = post.getAuthor();
+
         if (user == null) {
             LogUtils.i(TAG, "USER IS NULL");
         }
@@ -102,13 +103,12 @@ public class CardsAdapter extends BaseAdapter {
         }
 
         //加载头像
-        String avatarUrl = null;
         if (user.getAvatar() != null) {
-            avatarUrl = user.getAvatar().getFileUrl(context);
+            String avatarUrl = user.getAvatar().getFileUrl(context);
+            int defaultAvatar = user.getSex().equals(Constant.SEX_MALE) ? R.drawable.avatar_default_m : R.drawable.avatar_default_f;
+            ImageLoader.getInstance().displayImage(avatarUrl, viewHolder.userAvatar,
+                    MyApplication.getMyApplication().setOptions(defaultAvatar));
         }
-        int defaultAvatar = user.getSex().equals(Constant.SEX_MALE) ? R.drawable.avatar_default_m : R.drawable.avatar_default_f;
-        ImageLoader.getInstance().displayImage(avatarUrl, viewHolder.userAvatar,
-                MyApplication.getMyApplication().setOptions(defaultAvatar));
 
         //监听点击头像，跳转到个人主页
         viewHolder.userAvatar.setOnClickListener(new View.OnClickListener() {
@@ -128,8 +128,9 @@ public class CardsAdapter extends BaseAdapter {
         });
 
         //加载用户名
-        viewHolder.userName.setText(post.getAuthor().getUsername());
-
+        viewHolder.userName.setText(user.getUsername());
+        //加载时间戳
+        viewHolder.timeStamp.setText(post.getCreatedAt());
         //加载帖子标题
         viewHolder.title.setText(post.getContent());
 

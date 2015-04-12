@@ -11,12 +11,15 @@ import cn.bmob.v3.Bmob;
 
 
 public class SplashActivity extends BaseActivity {
+
+    private String TAG;
     private static final long DELAY_TIME = 2000L;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
+        TAG = getClass().getSimpleName();
         new Handler().postDelayed(new Runnable() {
 
             @Override

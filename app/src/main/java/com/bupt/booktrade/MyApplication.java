@@ -49,7 +49,7 @@ public class MyApplication extends Application {
     public void onCreate() {
         myApplication = this;
         Bmob.initialize(myApplication, Constant.BMOB_APP_ID);
-        LogUtils.i(TAG, getCurrentUser().getUsername());
+        //LogUtils.i(TAG, getCurrentUser().getUsername());
         setUpImageLoader();
         super.onCreate();
     }
@@ -88,7 +88,7 @@ public class MyApplication extends Application {
                 .cacheInMemory(true)//设置下载的图片是否缓存在内存中
                 .cacheOnDisc(true)//设置下载的图片是否缓存在SD卡中
                 .considerExifParams(true)  //是否考虑JPEG图像EXIF参数（旋转，翻转）
-                .imageScaleType(ImageScaleType.EXACTLY_STRETCHED)//设置图片以如何的编码方式显示
+                .imageScaleType(ImageScaleType.IN_SAMPLE_INT)//设置图片以如何的编码方式显示
                 .bitmapConfig(Bitmap.Config.RGB_565)//设置图片的解码类型//
                 .build();//构建完成
     }

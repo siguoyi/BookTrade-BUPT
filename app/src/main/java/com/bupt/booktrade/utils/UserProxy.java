@@ -64,13 +64,13 @@ public class UserProxy {
 	public User getCurrentUser(){
 		User user = BmobUser.getCurrentUser(mContext, User.class);
 		if(user != null){
-			LogUtils.i(TAG,"本地用户信息" + user.getObjectId() + "-"
-					+ user.getUsername() + "-"
-					+ user.getSessionToken() + "-"
-					+ user.getCreatedAt() + "-"
-					+ user.getUpdatedAt() + "-"
-					+ user.getSignature() + "-"
-					+ user.getSex());
+//			LogUtils.i(TAG,"本地用户信息" + user.getObjectId() + "-"
+//					+ user.getUsername() + "-"
+//					+ user.getSessionToken() + "-"
+//					+ user.getCreatedAt() + "-"
+//					+ user.getUpdatedAt() + "-"
+//					+ user.getSignature() + "-"
+//					+ user.getSex());
 			return user;
 		}else{
 			LogUtils.i(TAG,"本地用户为null,请登录。");

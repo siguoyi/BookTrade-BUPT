@@ -1,11 +1,194 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center">
+    android:layout_height="match_parent">
 
-    <ProgressBar
-        android:id="@+id/progressbar_circular"
-        style="@style/ProgressBar.Horizontal"
-        />
-</RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        >
+
+        <RelativeLayout
+            android:id="@+id/setting_user_avatar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_item"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="头像"
+                android:textSize="16sp"/>
+
+            <ImageView
+                android:id="@+id/setting_user_avatar"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/avatar_default_m"
+                android:scaleType="centerInside"
+                 />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/cornflowerblue" />
+
+        <RelativeLayout
+            android:id="@+id/setting_user_nickname_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_item"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:paddingBottom="8dip"
+                android:paddingTop="8dip"
+                android:text="昵称"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/setting_user_nickname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:paddingBottom="8dip"
+                android:paddingTop="8dip"
+                android:text="点击登录"
+                android:textSize="16sp"/>
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/cornflowerblue" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp">
+
+            <TextView
+                android:id="@+id/sex_choice_tips"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:paddingBottom="8dip"
+                android:paddingTop="8dip"
+                android:text="性别"
+                android:textSize="16sp"/>
+
+            <CheckBox
+                android:id="@+id/switch_sex_choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:button="@drawable/selector_sex_choice"
+                android:checked="true"
+                android:scaleType="centerInside" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/cornflowerblue" />
+
+        <RelativeLayout
+            android:id="@+id/settings_allow_push_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:paddingBottom="8dip"
+                android:paddingTop="8dip"
+                android:text="接收推送消息"
+                android:textSize="16sp"/>
+
+            <CheckBox
+                android:id="@+id/switch_allow_push"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:button="@drawable/selector_push_switch"
+                android:checked="true"
+                android:scaleType="centerInside" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/cornflowerblue" />
+
+        <RelativeLayout
+            android:id="@+id/setting_clear_cache_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            android:background="@drawable/selector_item">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp"
+                android:text="清除图片缓存"
+                android:textSize="16sp"/>
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/cornflowerblue" />
+
+        <RelativeLayout
+            android:id="@+id/setting_update_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            android:background="@drawable/selector_item">
+
+            <TextView
+                android:id="@+id/settings_date_tips"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp"
+                android:text="检查更新"
+                android:textSize="16sp"/>
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/setting_logout_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="注销"
+            android:textColor="@color/white"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/selector_blue_button"
+            />
+    </LinearLayout>
+</ScrollView>

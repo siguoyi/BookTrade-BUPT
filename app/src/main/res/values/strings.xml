@@ -15,7 +15,7 @@
     <string name="list_item_right_button">Right</string>
     <string name="one_more_back">再按一次返回键退出</string>
     <string name="list_click">list: </string>
-    <string name="me">me</string>
+    <string name="please_login">点击登录</string>
     <string name="new_post_hint">请输入图书的描述信息</string>
     <!-- Content Description -->
     <string name="desc_list_item_icon">Item Icon</string>

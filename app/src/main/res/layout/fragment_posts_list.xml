@@ -4,6 +4,14 @@
     android:layout_height="match_parent"
     android:background="@color/lightgrey">
 
+    <TextView
+        android:id="@+id/posts_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="正在加载..."
+        android:textSize="16sp" />
+
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_container"
         android:layout_width="match_parent"

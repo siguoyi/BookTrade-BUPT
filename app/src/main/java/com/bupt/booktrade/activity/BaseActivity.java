@@ -10,14 +10,14 @@ import com.bupt.booktrade.MyApplication;
  * Created by LiuYan on 2015/3/17.
  */
 public class BaseActivity extends FragmentActivity {
-    protected static String TAG;
+    //protected static String TAG;
     protected MyApplication mMyApplication;
     protected Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        TAG = this.getClass().getSimpleName();
+        //TAG = this.getClass().getSimpleName();
         mContext = this;
         if (null == mMyApplication) {
             mMyApplication = MyApplication.getMyApplication();

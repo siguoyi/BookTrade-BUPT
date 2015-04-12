@@ -47,4 +47,10 @@ public class User extends BmobUser {
     public void setSignature(String signature) {
         this.signature = signature;
     }
+
+    @Override
+    public String toString() {
+        return "User [sex=" + getSex() + ", avatar=" + getAvatar()
+                + ", favorite=" + getFavorite() + "]";
+    }
 }

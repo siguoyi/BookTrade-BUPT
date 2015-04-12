@@ -52,9 +52,6 @@ public class Post extends BmobObject implements Serializable{
 	public void setLove(int love) {
 		this.love = love;
 	}
-	public int getHate() {
-		return hate;
-	}
 	public void setHate(int hate) {
 		this.hate = hate;
 	}
@@ -96,5 +93,4 @@ public class Post extends BmobObject implements Serializable{
 				+ comment + ", isPass=" + isPass + ", myFav=" + myFav
 				+ ", myLove=" + myLove + ", relation=" + relation + "]";
 	}
-	
 }

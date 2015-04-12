@@ -16,12 +16,15 @@ import cn.bmob.v3.Bmob;
 
 public class PersonalHomeActivity extends BaseActivity {
 
+    private String TAG;
     private Fragment fragment = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_home);
+
+        TAG = getClass().getSimpleName();
         Bmob.initialize(this, Constant.BMOB_APP_ID);
 
         getActionBar().setTitle(R.string.title_activity_base_home);
