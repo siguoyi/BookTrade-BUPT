@@ -4,7 +4,7 @@ An Android app for BUPT students to post information of their used books.（deve
 
 ## Thanks ##
 
+- [Glide](https://github.com/bumptech/glide)
 - [SmoothProgressBar](https://github.com/castorflex/SmoothProgressBar)
-- [Android Universal Image Loader](https://github.com/nostra13/Android-Universal-Image-Loader)
 - [Float Labeled EditText](https://github.com/wrapp/floatlabelededittext)
 - [Wonderful2](https://github.com/bmob/Wonderful2)

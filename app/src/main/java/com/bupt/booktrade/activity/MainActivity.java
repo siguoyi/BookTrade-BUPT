@@ -3,6 +3,7 @@ package com.bupt.booktrade.activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -19,9 +20,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bupt.booktrade.MyApplication;
 import com.bupt.booktrade.R;
 import com.bupt.booktrade.adapter.NavDrawerListAdapter;
+import com.bupt.booktrade.entity.User;
 import com.bupt.booktrade.fragment.AboutFragment;
 import com.bupt.booktrade.fragment.MessageFragment;
 import com.bupt.booktrade.fragment.PostsListFragment;
@@ -30,7 +34,6 @@ import com.bupt.booktrade.fragment.model.NavDrawerItem;
 import com.bupt.booktrade.utils.Constant;
 import com.bupt.booktrade.utils.LogUtils;
 import com.bupt.booktrade.utils.ToastUtils;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
 
@@ -58,7 +61,6 @@ public class MainActivity extends BaseActivity {
     private static final int TIME_INTERVAL = 2000;
     private long mBackPressed;
 
-    private static final int PERSONAL_HOME_LIST_FRAGMENT = -1;
     private static final int POSTS_LIST_FRAGMENT = 0;
     private static final int NEW_POST_FRAGMENT = 1;
     private static final int MESSAGE_FRAGMENT = 2;
@@ -74,12 +76,14 @@ public class MainActivity extends BaseActivity {
     private AboutFragment aboutFragment;
     private FragmentTransaction transaction;
 
+    private User user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         TAG = getClass().getSimpleName();
         LogUtils.i(TAG, "onCreate");
+        user = MyApplication.getMyApplication().getCurrentUser();
 
         initViews();
         setListeners();
@@ -110,15 +114,20 @@ public class MainActivity extends BaseActivity {
 
         drawerUserAvatar = (ImageView) findViewById(R.id.drawer_user_avatar);
         drawerUsername = (TextView) findViewById(R.id.drawer_user_name);
-        if (MyApplication.getMyApplication().getCurrentUser() != null) {
-            if (MyApplication.getMyApplication().getCurrentUser().getAvatar() != null) {
-                String avatarUrl = MyApplication.getMyApplication().getCurrentUser().getAvatar().getFileUrl(this);
-                int defaultAvatar = MyApplication.getMyApplication().getCurrentUser().getSex().equals(Constant.SEX_MALE) ? R.drawable.avatar_default_m : R.drawable.avatar_default_f;
-                ImageLoader.getInstance().displayImage(avatarUrl, drawerUserAvatar,
-                        MyApplication.getMyApplication().setOptions(defaultAvatar));
+        if (user != null) {
+            if (user.getAvatar() != null) {
+                String avatarUrl = user.getAvatar().getFileUrl(this);
+                LogUtils.i(TAG, "avatarUrl" + ":" + avatarUrl);
+                int defaultAvatar = user.getSex().equals(Constant.SEX_MALE) ? R.drawable.avatar_default_m : R.drawable.avatar_default_f;
+                Glide.with(this)
+                        .load(Uri.parse(avatarUrl))
+                        .centerCrop()
+                        .placeholder(defaultAvatar)
+                        .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                        .into(drawerUserAvatar);
             }
-            if (MyApplication.getMyApplication().getCurrentUser().getUsername() != null) {
-                drawerUsername.setText(MyApplication.getMyApplication().getCurrentUser().getUsername());
+            if (user.getUsername() != null) {
+                drawerUsername.setText(user.getUsername());
             }
         }
 

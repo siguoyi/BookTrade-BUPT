@@ -2,6 +2,7 @@ package com.bupt.booktrade.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bupt.booktrade.MyApplication;
 import com.bupt.booktrade.R;
 import com.bupt.booktrade.activity.CommentActivity;
@@ -24,7 +27,6 @@ import com.bupt.booktrade.entity.User;
 import com.bupt.booktrade.utils.Constant;
 import com.bupt.booktrade.utils.LogUtils;
 import com.bupt.booktrade.utils.ToastUtils;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
 
@@ -78,7 +80,6 @@ public class CardsAdapter extends BaseAdapter {
             viewHolder.pic1 = (ImageView) convertView.findViewById(R.id.pic1);
             viewHolder.pic2 = (ImageView) convertView.findViewById(R.id.pic2);
             viewHolder.pic3 = (ImageView) convertView.findViewById(R.id.pic3);
-            viewHolder.pic4 = (ImageView) convertView.findViewById(R.id.pic4);
             viewHolder.shareCount = (TextView) convertView.findViewById(R.id.count_post_share);
             viewHolder.commentCount = (TextView) convertView.findViewById(R.id.count_post_comment);
             viewHolder.thumb = (ImageView) convertView.findViewById(R.id.post_thumb);
@@ -106,8 +107,12 @@ public class CardsAdapter extends BaseAdapter {
         if (user.getAvatar() != null) {
             String avatarUrl = user.getAvatar().getFileUrl(context);
             int defaultAvatar = user.getSex().equals(Constant.SEX_MALE) ? R.drawable.avatar_default_m : R.drawable.avatar_default_f;
-            ImageLoader.getInstance().displayImage(avatarUrl, viewHolder.userAvatar,
-                    MyApplication.getMyApplication().setOptions(defaultAvatar));
+            Glide.with(context)
+                    .load(Uri.parse(avatarUrl))
+                    .centerCrop()
+                    .placeholder(defaultAvatar)
+                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                    .into(viewHolder.userAvatar);
         }
 
         //监听点击头像，跳转到个人主页
@@ -139,10 +144,13 @@ public class CardsAdapter extends BaseAdapter {
             viewHolder.postPics.setVisibility(View.GONE);
         } else {
             viewHolder.postPics.setVisibility(View.VISIBLE);
-            ImageLoader.getInstance()
-                    .displayImage(post.getContentfigureurl().getFileUrl(context) == null ?
-                                    "" : post.getContentfigureurl().getFileUrl(context),
-                            viewHolder.pic1, MyApplication.getMyApplication().setOptions(R.drawable.ic_downloading));
+            String picUrl = post.getContentfigureurl().getFileUrl(context) == null ?
+                    "" : post.getContentfigureurl().getFileUrl(context);
+            Glide.with(context)
+                    .load(Uri.parse(picUrl))
+                    .centerCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(viewHolder.pic1);
         }
 
         //加载收藏图标
@@ -271,7 +279,6 @@ public class CardsAdapter extends BaseAdapter {
         private ImageView pic1;
         private ImageView pic2;
         private ImageView pic3;
-        private ImageView pic4;
         private TextView shareCount;
         private TextView commentCount;
         private ImageView thumb;

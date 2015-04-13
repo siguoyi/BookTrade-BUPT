@@ -3,7 +3,6 @@ package com.bupt.booktrade.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -18,15 +17,17 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bupt.booktrade.MyApplication;
 import com.bupt.booktrade.R;
 import com.bupt.booktrade.activity.LoginActivity;
 import com.bupt.booktrade.entity.User;
+import com.bupt.booktrade.utils.BitmapUtils;
+import com.bupt.booktrade.utils.CacheUtils;
 import com.bupt.booktrade.utils.Constant;
 import com.bupt.booktrade.utils.LogUtils;
 import com.bupt.booktrade.utils.ToastUtils;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import java.io.File;
 
@@ -51,35 +52,46 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
 
     private ImageView settingAvatar;
     private TextView settingNickname;
-
+    private TextView cacheSize;
     private User user;
     private final int REQUEST_CODE_ALBUM = 0;
+
+    private View rootView;
+    private ImageView drawerAvatar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         TAG = getClass().getSimpleName();
         user = MyApplication.getMyApplication().getCurrentUser();
+        drawerAvatar = (ImageView) getActivity().findViewById(R.id.drawer_user_avatar);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        LogUtils.i(TAG, "onCreateView");
+        if (rootView == null) {
+            rootView = inflater.inflate(R.layout.fragment_setting, container, false);
+            setAvatarLayout = (RelativeLayout) rootView.findViewById(R.id.setting_user_avatar_layout);
+            settingAvatar = (ImageView) rootView.findViewById(R.id.setting_user_avatar);
+            setNicknameLayout = (RelativeLayout) rootView.findViewById(R.id.setting_user_nickname_layout);
+            settingNickname = (TextView) rootView.findViewById(R.id.setting_user_nickname);
+            cacheSize = (TextView) rootView.findViewById(R.id.cache_size);
+            clearCacheLayout = (RelativeLayout) rootView.findViewById(R.id.setting_clear_cache_layout);
+            checkUpdateLayout = (RelativeLayout) rootView.findViewById(R.id.setting_update_layout);
 
-        View rootView = inflater.inflate(R.layout.fragment_setting, container, false);
-        setAvatarLayout = (RelativeLayout) rootView.findViewById(R.id.setting_user_avatar_layout);
-        settingAvatar = (ImageView) rootView.findViewById(R.id.setting_user_avatar);
-        setNicknameLayout = (RelativeLayout) rootView.findViewById(R.id.setting_user_nickname_layout);
-        settingNickname = (TextView) rootView.findViewById(R.id.setting_user_nickname);
-        clearCacheLayout = (RelativeLayout) rootView.findViewById(R.id.setting_clear_cache_layout);
-        checkUpdateLayout = (RelativeLayout) rootView.findViewById(R.id.setting_update_layout);
+            sexSwitch = (CheckBox) rootView.findViewById(R.id.switch_sex_choice);
+            allowPushSwitch = (CheckBox) rootView.findViewById(R.id.switch_allow_push);
 
-        sexSwitch = (CheckBox) rootView.findViewById(R.id.switch_sex_choice);
-        allowPushSwitch = (CheckBox) rootView.findViewById(R.id.switch_allow_push);
-
-        logout = (Button) rootView.findViewById(R.id.setting_logout_button);
-        setListener();
-        initPersonalInfo();
+            logout = (Button) rootView.findViewById(R.id.setting_logout_button);
+            setListener();
+            initPersonalInfo();
+        }
+        ViewGroup parent = (ViewGroup) rootView.getParent();
+        if (parent != null) {
+            parent.removeView(rootView);
+        }
         return rootView;
     }
 
@@ -97,7 +109,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
     }
 
     private void initPersonalInfo() {
-        User user = BmobUser.getCurrentUser(mContext, User.class);
+        User user = MyApplication.getMyApplication().getCurrentUser();
         if (user != null) {
             settingNickname.setText(user.getUsername());
             if (user.getSex().equals(Constant.SEX_MALE)) {
@@ -109,23 +121,20 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
             }
             BmobFile avatarFile = user.getAvatar();
             if (null != avatarFile) {
-                ImageLoader.getInstance()
-                        .displayImage(avatarFile.getFileUrl(mContext), settingAvatar,
-                                MyApplication.getMyApplication().setOptions(R.drawable.avatar_default_m),
-                                new SimpleImageLoadingListener() {
-
-                                    @Override
-                                    public void onLoadingComplete(String imageUri, View view,
-                                                                  Bitmap loadedImage) {
-                                        // TODO Auto-generated method stub
-                                        super.onLoadingComplete(imageUri, view, loadedImage);
-                                    }
-                                });
+                int defaultAvatar = user.getSex().equals(Constant.SEX_MALE) ? R.drawable.avatar_default_m : R.drawable.avatar_default_f;
+                Glide.with(mContext)
+                        .load(Uri.parse(avatarFile.getFileUrl(mContext)))
+                        .centerCrop()
+                        .placeholder(defaultAvatar)
+                        .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                        .into(settingAvatar);
             }
             logout.setText("注销");
         } else {
             logout.setText("登录");
         }
+
+        cacheSize.setText(String.valueOf(CacheUtils.getCacheSize()) + "KB");
     }
 
     /**
@@ -143,7 +152,21 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        switch (buttonView.getId()) {
+            case R.id.switch_sex_choice:
+                if (isChecked) {
+                    updateSex(0);
+                } else {
+                    updateSex(1);
+                }
+                break;
 
+            case R.id.switch_allow_push:
+                break;
+
+            default:
+                break;
+        }
     }
 
     @Override
@@ -167,20 +190,15 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
                 } else {
                     skipToLogin();
                 }
+                break;
+
+            case R.id.setting_clear_cache_layout:
+                CacheUtils.deleteFilesInCache();
+                cacheSize.setText(String.valueOf(CacheUtils.getCacheSize()) + "KB");
+                break;
 
             case R.id.setting_update_layout:
-                user.setSex(Constant.SEX_FEMALE);
-                user.update(mContext, new UpdateListener() {
-                    @Override
-                    public void onSuccess() {
-                        LogUtils.d(TAG, user.getSex());
-                    }
-
-                    @Override
-                    public void onFailure(int i, String s) {
-                        LogUtils.d(TAG, s);
-                    }
-                });
+                ToastUtils.showToast(mContext, "暂无新版本", Toast.LENGTH_SHORT);
                 break;
         }
     }
@@ -194,9 +212,18 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
                 case REQUEST_CODE_ALBUM:
                     if (data != null) {
                         Uri originalUri = data.getData();
-                        String targetUrl = getPath(originalUri);
+                        String targetUrl = BitmapUtils.saveToSdCard(mContext, BitmapUtils.compressBitmapFromFile(getPath(originalUri), 800, 480));
                         LogUtils.d(TAG, targetUrl);
-                        ImageLoader.getInstance().displayImage("file://" + targetUrl, settingAvatar, MyApplication.getMyApplication().setOptions(R.drawable.avatar_default_m));
+                        Glide.with(mContext)
+                                .load(Uri.parse("file://" + targetUrl))
+                                .centerCrop()
+                                .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                                .into(settingAvatar);
+                        Glide.with(mContext)
+                                .load(Uri.parse("file://" + targetUrl))
+                                .centerCrop()
+                                .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                                .into(drawerAvatar);
                         //takeLayout.setVisibility(View.GONE);
                         final BmobFile avatar = new BmobFile(new File(targetUrl));
                         avatar.uploadblock(mContext, new UploadFileListener() {
@@ -223,8 +250,6 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
                                 LogUtils.d(TAG, s);
                             }
                         });
-
-
                     }
 
                     break;
@@ -263,5 +288,33 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
         ToastUtils.showToast(mContext, "请先登录", Toast.LENGTH_SHORT);
         Intent loginIntent = new Intent(mContext, LoginActivity.class);
         startActivity(loginIntent);
+    }
+
+    private void updateSex(int sex) {
+        if (user != null) {
+            if (sex == 0) {
+                user.setSex(Constant.SEX_MALE);
+            } else {
+                user.setSex(Constant.SEX_FEMALE);
+            }
+            user.update(mContext, new UpdateListener() {
+
+                @Override
+                public void onSuccess() {
+                    // TODO Auto-generated method stub
+                    LogUtils.i(TAG, "sex:" + user.getSex());
+                }
+
+                @Override
+                public void onFailure(int arg0, String arg1) {
+                    // TODO Auto-generated method stub
+
+                    LogUtils.i(TAG, arg1);
+                }
+            });
+        } else {
+            skipToLogin();
+        }
+
     }
 }

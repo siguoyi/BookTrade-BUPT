@@ -49,6 +49,7 @@ public class PostsListFragment extends BaseFragment implements SwipeRefreshLayou
     private ArrayList<Post> mListItems;
     private CardsAdapter mAdapter;
 
+    private View rootView;
     public enum RefreshType {
         REFRESH, LOAD_MORE
     }
@@ -95,17 +96,25 @@ public class PostsListFragment extends BaseFragment implements SwipeRefreshLayou
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_posts_list, container, false);
         LogUtils.i(TAG, "onCreateView");
-        postsList = (ListView) rootView.findViewById(R.id.cards_list);
-        postsLoading = (TextView) rootView.findViewById(R.id.posts_loading);
+        if (rootView == null) {
+            rootView = inflater.inflate(R.layout.fragment_posts_list, container, false);
+            LogUtils.i(TAG, "onCreateView");
+            postsList = (ListView) rootView.findViewById(R.id.cards_list);
+            postsLoading = (TextView) rootView.findViewById(R.id.posts_loading);
 
-        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_container);
-        mSwipeRefreshLayout.setColorSchemeResources(R.color.google_red, R.color.google_blue, R.color.google_green, R.color.google_yellow);
-        mSwipeRefreshLayout.setDistanceToTriggerSync(400);
-        mSwipeRefreshLayout.setOnRefreshListener(this);
+            mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_container);
+            mSwipeRefreshLayout.setColorSchemeResources(R.color.google_red, R.color.google_blue, R.color.google_green, R.color.google_yellow);
+            mSwipeRefreshLayout.setDistanceToTriggerSync(400);
+            mSwipeRefreshLayout.setOnRefreshListener(this);
 
-        setupList();
+            setupList();
+        }
+        ViewGroup parent = (ViewGroup) rootView.getParent();
+        if (parent != null) {
+            parent.removeView(rootView);
+        }
+
         return rootView;
     }
 

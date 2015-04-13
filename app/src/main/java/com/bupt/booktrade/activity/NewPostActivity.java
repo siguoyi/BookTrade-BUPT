@@ -17,13 +17,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.bupt.booktrade.MyApplication;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bupt.booktrade.R;
 import com.bupt.booktrade.entity.Post;
 import com.bupt.booktrade.entity.User;
+import com.bupt.booktrade.utils.BitmapUtils;
 import com.bupt.booktrade.utils.LogUtils;
 import com.bupt.booktrade.utils.ToastUtils;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,18 +43,20 @@ public class NewPostActivity extends BaseActivity implements View.OnClickListene
     private static final int REQUEST_CODE_ALBUM = 1;
     private static final int REQUEST_CODE_CAMERA = 2;
 
-    public boolean isSending = false;
-    EditText content;
+    private boolean isSending = false;
+    private EditText content;
 
-    LinearLayout openLayout;
-    LinearLayout takeLayout;
+    private LinearLayout openLayout;
+    private LinearLayout takeLayout;
 
-    ImageView albumPic;
-    ImageView takePic;
+    private ImageView albumPic;
+    private ImageView takePic;
+    private ImageView pic1;
+    private ImageView pic2;
+    private ImageView pic3;
+    private String targetUrl = null;
 
-    String targetUrl = null;
-
-    String mCurrentPhotoPath;
+    private String mCurrentPhotoPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +75,9 @@ public class NewPostActivity extends BaseActivity implements View.OnClickListene
         albumPic = (ImageView) findViewById(R.id.open_pic);
         takePic = (ImageView) findViewById(R.id.take_pic);
 
+        pic1 = (ImageView) findViewById(R.id.pic1);
+        pic2 = (ImageView) findViewById(R.id.pic2);
+        pic3 = (ImageView) findViewById(R.id.pic3);
         openLayout.setOnClickListener(this);
         takeLayout.setOnClickListener(this);
 
@@ -80,8 +86,6 @@ public class NewPostActivity extends BaseActivity implements View.OnClickListene
 
     @Override
     protected void onStop() {
-        ImageLoader.getInstance().clearMemoryCache();
-        ImageLoader.getInstance().clearDiskCache();
         super.onStop();
     }
 
@@ -111,7 +115,7 @@ public class NewPostActivity extends BaseActivity implements View.OnClickListene
                         photoFile = createImageFile();
                     } catch (IOException ex) {
                         // Error occurred while creating the File
-                        ToastUtils.showToast(mContext, "创建照片失败！", Toast.LENGTH_SHORT);
+                        ToastUtils.showToast(mContext, "创建照片失败", Toast.LENGTH_SHORT);
                     }
                     // Continue only if the File was successfully created
                     if (photoFile != null) {
@@ -163,17 +167,25 @@ public class NewPostActivity extends BaseActivity implements View.OnClickListene
                 case REQUEST_CODE_ALBUM:
                     if (data != null) {
                         Uri originalUri = data.getData();
-                        targetUrl = getPath(originalUri);
+                        targetUrl = BitmapUtils.saveToSdCard(this, BitmapUtils.compressBitmapFromFile(getPath(originalUri), 800, 480));
                         LogUtils.d(TAG, targetUrl);
-                        ImageLoader.getInstance().displayImage("file://" + targetUrl, albumPic, MyApplication.getMyApplication().setOptions(R.drawable.open_picture));
+                        Glide.with(this)
+                                .load(Uri.parse("file://" + targetUrl))
+                                .centerCrop()
+                                .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                                .into(pic1);
                         //takeLayout.setVisibility(View.GONE);
                     }
                     break;
                 case REQUEST_CODE_CAMERA:
                     galleryAddPic();
                     LogUtils.d(TAG, mCurrentPhotoPath);
-                    targetUrl = mCurrentPhotoPath;
-                    ImageLoader.getInstance().displayImage("file://" + mCurrentPhotoPath, takePic, MyApplication.getMyApplication().setOptions(R.drawable.take_picture));
+                    targetUrl = BitmapUtils.saveToSdCard(this, BitmapUtils.compressBitmapFromFile(mCurrentPhotoPath, 800, 480));
+                    Glide.with(this)
+                            .load(Uri.parse("file://" + targetUrl))
+                            .centerCrop()
+                            .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                            .into(pic1);
                     break;
                 default:
                     break;

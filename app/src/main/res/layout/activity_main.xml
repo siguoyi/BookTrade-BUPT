@@ -7,8 +7,7 @@
     <FrameLayout
         android:id="@+id/frame_container_main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </FrameLayout>
+        android:layout_height="match_parent"></FrameLayout>
 
     <LinearLayout
         android:id="@+id/drawer_linear_layout"
@@ -17,36 +16,36 @@
         android:layout_gravity="start"
         android:background="@color/list_background"
         android:orientation="vertical">
+
         <LinearLayout
             android:id="@+id/drawer_user_header"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
+            android:background="@drawable/selector_user_header"
             android:clickable="true"
             android:focusable="true"
             android:focusableInTouchMode="true"
-            android:background="@drawable/selector_user_header">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/drawer_user_avatar"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_marginLeft="16dp"
-                android:layout_marginStart="16dp"
-                android:src="@drawable/avatar_default_m"/>
+                android:layout_marginStart="16dp" />
 
             <TextView
                 android:id="@+id/drawer_user_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginRight="16dp"
                 android:layout_marginEnd="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginStart="16dp"
                 android:text="@string/please_login"
                 android:textColor="@color/white"
-                android:textSize="@dimen/text_size_medium"/>
+                android:textSize="@dimen/text_size_medium" />
 
         </LinearLayout>
         <!-- ListView to display drawer menu -->

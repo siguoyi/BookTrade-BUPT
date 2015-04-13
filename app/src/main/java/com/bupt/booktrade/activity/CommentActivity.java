@@ -3,6 +3,7 @@ package com.bupt.booktrade.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -22,6 +23,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bupt.booktrade.MyApplication;
 import com.bupt.booktrade.R;
 import com.bupt.booktrade.adapter.CommentAdapter;
@@ -32,9 +35,6 @@ import com.bupt.booktrade.entity.User;
 import com.bupt.booktrade.utils.Constant;
 import com.bupt.booktrade.utils.LogUtils;
 import com.bupt.booktrade.utils.ToastUtils;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,7 +62,6 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     private ImageView pic1;
     private ImageView pic2;
     private ImageView pic3;
-    private ImageView pic4;
     private TextView shareCount;
     private TextView commentCount;
     private ImageView thumb;
@@ -97,8 +96,6 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
 
     @Override
     protected void onStop() {
-        ImageLoader.getInstance().clearMemoryCache();
-        ImageLoader.getInstance().clearDiskCache();
         super.onStop();
     }
     private void findViews() {
@@ -119,7 +116,6 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         pic1 = (ImageView) findViewById(R.id.pic1);
         pic2 = (ImageView) findViewById(R.id.pic2);
         pic3 = (ImageView) findViewById(R.id.pic3);
-        pic4 = (ImageView) findViewById(R.id.pic4);
         shareCount = (TextView) findViewById(R.id.count_post_share);
         commentCount = (TextView) findViewById(R.id.count_post_comment);
         thumb = (ImageView) findViewById(R.id.post_thumb);
@@ -178,20 +174,15 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         User user = post.getAuthor();
         BmobFile avatar = user.getAvatar();
         if (null != avatar) {
+            //int defaultAvatar = user.getSex().equals(Constant.SEX_MALE) ? R.drawable.avatar_default_m : R.drawable.avatar_default_f;
+            String avatarUrl = user.getAvatar().getFileUrl(this);
             int defaultAvatar = user.getSex().equals(Constant.SEX_MALE) ? R.drawable.avatar_default_m : R.drawable.avatar_default_f;
-            ImageLoader.getInstance()
-                    .displayImage(avatar.getFileUrl(this), userAvatar,
-                            MyApplication.getMyApplication().setOptions(defaultAvatar),
-                            new SimpleImageLoadingListener() {
-
-                                @Override
-                                public void onLoadingComplete(String imageUri, View view,
-                                                              Bitmap loadedImage) {
-                                    // TODO Auto-generated method stub
-                                    super.onLoadingComplete(imageUri, view, loadedImage);
-                                    LogUtils.i(TAG, "load personal icon completed.");
-                                }
-                            });
+            Glide.with(this)
+                    .load(Uri.parse(avatarUrl))
+                    .centerCrop()
+                    .placeholder(defaultAvatar)
+                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                    .into(userAvatar);
         }
         //用户名
         userName.setText(post.getAuthor().getUsername());
@@ -204,24 +195,13 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
             postPics.setVisibility(View.GONE);
         } else {
             postPics.setVisibility(View.VISIBLE);
-
-            ImageLoader.getInstance()
-                    .displayImage(post.getContentfigureurl().getFileUrl(this) == null ? "" : post.getContentfigureurl().getFileUrl(this), pic1,
-                            MyApplication.getMyApplication().setOptions(R.drawable.ic_downloading),
-                            new SimpleImageLoadingListener() {
-                                @Override
-                                public void onLoadingComplete(String imageUri, View view,
-                                                              Bitmap loadedImage) {
-                                    // TODO Auto-generated method stub
-                                    super.onLoadingComplete(imageUri, view, loadedImage);
-//                                    float[] cons = getBitmapConfiguration(loadedImage, pic1, 1.0f);
-//                                    RelativeLayout.LayoutParams layoutParams =
-//                                            new RelativeLayout.LayoutParams((int) cons[0], (int) cons[1]);
-//                                    layoutParams.addRule(RelativeLayout.BELOW, R.id.post_title);
-//                                    pic1.setLayoutParams(layoutParams);
-                                }
-
-                            });
+            String picUrl = post.getContentfigureurl().getFileUrl(this) == null ?
+                    "" : post.getContentfigureurl().getFileUrl(this);
+            Glide.with(this)
+                    .load(Uri.parse(picUrl))
+                    .centerCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(pic1);
         }
 
         //点赞
