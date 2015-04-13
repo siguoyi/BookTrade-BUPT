@@ -104,6 +104,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     public void onBackPressed() {
         super.onBackPressed();
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        setResult(RESULT_OK);
+        LogUtils.i(TAG, "onBackPressed");
         startActivity(intent);
     }
 

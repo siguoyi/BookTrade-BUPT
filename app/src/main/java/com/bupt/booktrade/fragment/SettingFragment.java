@@ -58,6 +58,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
 
     private View rootView;
     private ImageView drawerAvatar;
+    private TextView drawerUserName;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -65,6 +66,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
         TAG = getClass().getSimpleName();
         user = MyApplication.getMyApplication().getCurrentUser();
         drawerAvatar = (ImageView) getActivity().findViewById(R.id.drawer_user_avatar);
+        drawerUserName = (TextView) getActivity().findViewById(R.id.drawer_user_name);
     }
 
     @Override
@@ -137,6 +139,12 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
         cacheSize.setText(String.valueOf(CacheUtils.getCacheSize()) + "KB");
     }
 
+    private void setLogoutUserInfo() {
+        int defaultAvatar = user.getSex().equals(Constant.SEX_MALE) ? R.drawable.avatar_default_m : R.drawable.avatar_default_f;
+        drawerAvatar.setImageResource(defaultAvatar);
+        drawerUserName.setText("点击登录");
+    }
+
     /**
      * 判断用户是否登录
      *
@@ -149,6 +157,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
         }
         return false;
     }
+
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -176,7 +185,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
                 if (isLogin()) {
                     BmobUser.logOut(mContext);
                     ToastUtils.showToast(mContext, "已注销", Toast.LENGTH_SHORT);
-                } else {
+                    setLogoutUserInfo();
                     skipToLogin();
                 }
                 break;
@@ -291,7 +300,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
     }
 
     private void updateSex(int sex) {
-        if (user != null) {
+        if (isLogin() && user != null) {
             if (sex == 0) {
                 user.setSex(Constant.SEX_MALE);
             } else {

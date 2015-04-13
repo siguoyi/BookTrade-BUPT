@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.bupt.booktrade.R;
 
@@ -16,8 +17,7 @@ import fr.castorflex.android.circularprogressbar.CircularProgressDrawable;
 public class AboutFragment extends BaseFragment {
 
     private String TAG;
-    private ProgressBar mProgressBar;
-
+    private TextView about;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,14 +29,7 @@ public class AboutFragment extends BaseFragment {
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_about, container, false);
-        mProgressBar = (ProgressBar) rootView.findViewById(R.id.progressbar_circular);
-        mProgressBar.setIndeterminateDrawable(new CircularProgressDrawable
-                .Builder(getActivity())
-                .colors(getResources().getIntArray(R.array.google_colors))
-                .sweepSpeed(1f)
-                .strokeWidth(5)
-                .style(CircularProgressDrawable.Style.ROUNDED)
-                .build());
+        about = (TextView) rootView.findViewById(R.id.about);
         return rootView;
     }
 }

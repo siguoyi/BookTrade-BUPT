@@ -37,6 +37,8 @@ import com.bupt.booktrade.utils.ToastUtils;
 
 import java.util.ArrayList;
 
+import cn.bmob.v3.BmobUser;
+
 
 public class MainActivity extends BaseActivity {
 
@@ -67,6 +69,7 @@ public class MainActivity extends BaseActivity {
     private static final int SETTING_FRAGMENT = 3;
     private static final int ABOUT_FRAGMENT = 4;
 
+    private static final int REQUEST_LOGIN = 0;
     private int drawerPosition = POSTS_LIST_FRAGMENT;//默认显示首页
 
     private Fragment fragment = null;
@@ -77,6 +80,7 @@ public class MainActivity extends BaseActivity {
     private FragmentTransaction transaction;
 
     private User user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,22 +118,7 @@ public class MainActivity extends BaseActivity {
 
         drawerUserAvatar = (ImageView) findViewById(R.id.drawer_user_avatar);
         drawerUsername = (TextView) findViewById(R.id.drawer_user_name);
-        if (user != null) {
-            if (user.getAvatar() != null) {
-                String avatarUrl = user.getAvatar().getFileUrl(this);
-                LogUtils.i(TAG, "avatarUrl" + ":" + avatarUrl);
-                int defaultAvatar = user.getSex().equals(Constant.SEX_MALE) ? R.drawable.avatar_default_m : R.drawable.avatar_default_f;
-                Glide.with(this)
-                        .load(Uri.parse(avatarUrl))
-                        .centerCrop()
-                        .placeholder(defaultAvatar)
-                        .diskCacheStrategy(DiskCacheStrategy.RESULT)
-                        .into(drawerUserAvatar);
-            }
-            if (user.getUsername() != null) {
-                drawerUsername.setText(user.getUsername());
-            }
-        }
+        updateUserHeader();
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
                 R.drawable.ic_drawer, //nav menu toggle icon
@@ -152,6 +141,37 @@ public class MainActivity extends BaseActivity {
         initNavDrawerItems();
     }
 
+    private void updateUserHeader() {
+        user = MyApplication.getMyApplication().getCurrentUser();
+        if (user != null) {
+            int defaultAvatar = user.getSex().equals(Constant.SEX_MALE) ? R.drawable.avatar_default_m : R.drawable.avatar_default_f;
+            drawerUserAvatar.setImageResource(defaultAvatar);
+            if (user.getAvatar() != null) {
+                String avatarUrl = user.getAvatar().getFileUrl(this);
+                LogUtils.i(TAG, "avatarUrl" + ":" + avatarUrl);
+                Glide.clear(drawerUserAvatar);
+                Glide.with(this)
+                        .load(Uri.parse(avatarUrl))
+                        .centerCrop()
+                        .placeholder(defaultAvatar)
+                        .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                        .into(drawerUserAvatar);
+            }
+            if (user.getUsername() != null) {
+                drawerUsername.setText(user.getUsername());
+            }
+        } else {
+            setLogoutUserInfo();
+        }
+    }
+
+    private void setLogoutUserInfo() {
+        if (user != null && user.getSex() != null) {
+            int defaultAvatar = user.getSex().equals(Constant.SEX_MALE) ? R.drawable.avatar_default_m : R.drawable.avatar_default_f;
+            drawerUserAvatar.setImageResource(defaultAvatar);
+        }
+        drawerUsername.setText("点击登录");
+    }
 
     private void initNavDrawerItems() {
         // load slide menu items
@@ -189,10 +209,10 @@ public class MainActivity extends BaseActivity {
                 if (mDrawerLayout.isDrawerOpen(mDrawerLinear)) {
                     mDrawerLayout.closeDrawer(mDrawerLinear);
                 }
-                if (MyApplication.getMyApplication().getCurrentUser() == null) {
+                if (!isLogin()) {
                     ToastUtils.showToast(MainActivity.this, "请先登录", Toast.LENGTH_SHORT);
                     Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
-                    startActivity(loginIntent);
+                    startActivityForResult(loginIntent, REQUEST_LOGIN);
                 } else {
                     Intent personalPageIntent = new Intent(MainActivity.this, PersonalHomeActivity.class);
                     startActivity(personalPageIntent);
@@ -208,6 +228,7 @@ public class MainActivity extends BaseActivity {
         LogUtils.d(TAG, "onResume()");
         super.onResume();
         mBackPressed = 0L;
+        drawerPosition = POSTS_LIST_FRAGMENT;
         displayView(drawerPosition);
     }
 
@@ -218,16 +239,46 @@ public class MainActivity extends BaseActivity {
     public void onBackPressed() {
         if (mDrawerLayout.isDrawerOpen(mDrawerLinear)) {
             mDrawerLayout.closeDrawer(mDrawerLinear);
+        }
+        if (drawerPosition != POSTS_LIST_FRAGMENT) {
+            drawerPosition = POSTS_LIST_FRAGMENT;
+            displayView(drawerPosition);
         } else {
             if (System.currentTimeMillis() - mBackPressed <= TIME_INTERVAL) {
                 ToastUtils.clearToast();
                 MyApplication.getMyApplication().exit();
                 //finish();
-                super.onBackPressed();
                 return;
             } else {
                 ToastUtils.showToast(this, R.string.one_more_back, Toast.LENGTH_SHORT);
                 mBackPressed = System.currentTimeMillis();
+            }
+        }
+    }
+
+    /**
+     * 判断用户是否登录
+     *
+     * @return
+     */
+    private boolean isLogin() {
+        BmobUser user = BmobUser.getCurrentUser(mContext, User.class);
+        if (user != null) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case REQUEST_LOGIN:
+                    updateUserHeader();
+                    drawerPosition = POSTS_LIST_FRAGMENT;
+                    displayView(drawerPosition);
+                    break;
             }
         }
     }
@@ -276,15 +327,33 @@ public class MainActivity extends BaseActivity {
                 break;
             case NEW_POST_FRAGMENT:
                 drawerPosition = POSTS_LIST_FRAGMENT;
-                mDrawerLayout.closeDrawer(mDrawerLinear);
-                Intent intent = new Intent(MainActivity.this, NewPostActivity.class);
-                startActivity(intent);
-                return;
+                if (mDrawerLayout.isDrawerOpen(mDrawerLinear)) {
+                    mDrawerLayout.closeDrawer(mDrawerLinear);
+                }
+                if (!isLogin()) {
+                    Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivityForResult(loginIntent, REQUEST_LOGIN);
+                    return;
+                } else {
+                    Intent intent = new Intent(MainActivity.this, NewPostActivity.class);
+                    startActivity(intent);
+                    return;
+                }
             case MESSAGE_FRAGMENT:
                 fragment = messageFragment;
                 break;
             case SETTING_FRAGMENT:
-                fragment = settingFragment;
+                if (!isLogin()) {
+                    drawerPosition = POSTS_LIST_FRAGMENT;
+                    if (mDrawerLayout.isDrawerOpen(mDrawerLinear)) {
+                        mDrawerLayout.closeDrawer(mDrawerLinear);
+                    }
+                    Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivityForResult(loginIntent, REQUEST_LOGIN);
+                    return;
+                } else {
+                    fragment = settingFragment;
+                }
                 break;
             case ABOUT_FRAGMENT:
                 fragment = aboutFragment;
@@ -297,11 +366,11 @@ public class MainActivity extends BaseActivity {
             if (fragment.isAdded()) {
                 transaction = getSupportFragmentManager().beginTransaction();
                 transaction.addToBackStack(null);
-                transaction.show(fragment).commit();
+                transaction.show(fragment).commitAllowingStateLoss();
             } else {
                 transaction = getSupportFragmentManager().beginTransaction();
                 transaction.addToBackStack(null);
-                transaction.replace(R.id.frame_container_main, fragment).commit();
+                transaction.replace(R.id.frame_container_main, fragment).commitAllowingStateLoss();
             }
         } else {
             // error in creating fragment

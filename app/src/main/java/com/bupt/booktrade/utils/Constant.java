@@ -5,7 +5,7 @@ package com.bupt.booktrade.utils;
  */
 public class Constant {
 
-    public static final String BMOB_APP_ID = "27ec576833c87b1a999df3fcea9b2044";
+    public static final String BMOB_APP_ID = "27ec576833c87b1a999df3fcea9b2044";//your Bmob Application ID
 
     String TABLE_AI = "Mood";
     String TABLE_COMMENT = "Comment";

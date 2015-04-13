@@ -107,6 +107,7 @@ public class CardsAdapter extends BaseAdapter {
         if (user.getAvatar() != null) {
             String avatarUrl = user.getAvatar().getFileUrl(context);
             int defaultAvatar = user.getSex().equals(Constant.SEX_MALE) ? R.drawable.avatar_default_m : R.drawable.avatar_default_f;
+            Glide.clear(viewHolder.userAvatar);
             Glide.with(context)
                     .load(Uri.parse(avatarUrl))
                     .centerCrop()
@@ -119,7 +120,7 @@ public class CardsAdapter extends BaseAdapter {
         viewHolder.userAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (MyApplication.getMyApplication().getCurrentUser() == null) {
+                if (!isLogin()) {
                     ToastUtils.showToast(context, "请先登录", Toast.LENGTH_SHORT);
                     Intent loginIntent = new Intent(context, LoginActivity.class);
                     context.startActivity(loginIntent);
@@ -146,11 +147,18 @@ public class CardsAdapter extends BaseAdapter {
             viewHolder.postPics.setVisibility(View.VISIBLE);
             String picUrl = post.getContentfigureurl().getFileUrl(context) == null ?
                     "" : post.getContentfigureurl().getFileUrl(context);
+            Glide.clear(viewHolder.pic1);
             Glide.with(context)
                     .load(Uri.parse(picUrl))
                     .centerCrop()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(viewHolder.pic1);
+            viewHolder.pic1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ToastUtils.showToast(context, "pic1", Toast.LENGTH_SHORT);
+                }
+            });
         }
 
         //加载收藏图标
@@ -182,7 +190,7 @@ public class CardsAdapter extends BaseAdapter {
         viewHolder.likePost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (MyApplication.getMyApplication().getCurrentUser() == null) {
+                if (!isLogin()) {
                     ToastUtils.showToast(context, "请先登录", Toast.LENGTH_SHORT);
                     Intent loginIntent = new Intent(context, LoginActivity.class);
                     context.startActivity(loginIntent);
@@ -256,7 +264,7 @@ public class CardsAdapter extends BaseAdapter {
         viewHolder.commentPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (MyApplication.getMyApplication().getCurrentUser() == null) {
+                if (!isLogin()) {
                     ToastUtils.showToast(context, "请先登录", Toast.LENGTH_SHORT);
                     Intent loginIntent = new Intent(context, LoginActivity.class);
                     context.startActivity(loginIntent);
@@ -270,6 +278,18 @@ public class CardsAdapter extends BaseAdapter {
         return convertView;
     }
 
+    /**
+     * 判断用户是否登录
+     *
+     * @return
+     */
+    private boolean isLogin() {
+        BmobUser user = BmobUser.getCurrentUser(context, User.class);
+        if (user != null) {
+            return true;
+        }
+        return false;
+    }
     private static class ViewHolder {
         private ImageView userAvatar;
         private TextView userName;
@@ -295,7 +315,7 @@ public class CardsAdapter extends BaseAdapter {
     private void onClickFav(View v, final Post post) {
         // TODO Auto-generated method stub
         final User user = BmobUser.getCurrentUser(context, User.class);
-        if (user != null && user.getSessionToken() != null) {
+        if (isLogin() && user != null && user.getSessionToken() != null) {
             final BmobRelation favRelation = new BmobRelation();
             if (!post.getMyFav()) {
                 ((ImageView) v).setImageResource(R.drawable.ic_favorite);

@@ -40,5 +40,12 @@
     <string name="back_to_login">返回登录</string>
     <string name="title_activity_comment">帖子</string>
 
-
+    <string name="about">
+        <p><b>BookTrade-BUPT\n</b></p>
+        <p>北邮二手书Android客户端\n</p>
+        <p>\n</p>
+        <p>第一个独立开发的Android app，学习Android用。\n</p>
+        <p>已在我的Github开源:\n</p>
+        <p>\n</p>
+        <p><u><b>https://github.com/Demievil/BookTrade-BUPT</b></u></p></string>
 </resources>

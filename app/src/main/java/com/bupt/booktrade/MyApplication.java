@@ -45,6 +45,8 @@ public class MyApplication extends Application {
 
     public void exit() {
         ActivityManagerUtils.getInstance().removeAllActivity();
+        System.gc();
+
     }
 
     public Activity getTopActivity() {

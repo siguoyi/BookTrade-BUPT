@@ -2,11 +2,9 @@ package com.bupt.booktrade.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,6 +33,7 @@ import com.bupt.booktrade.entity.User;
 import com.bupt.booktrade.utils.Constant;
 import com.bupt.booktrade.utils.LogUtils;
 import com.bupt.booktrade.utils.ToastUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -98,6 +97,13 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     protected void onStop() {
         super.onStop();
     }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        super.onBackPressed();
+    }
+
     private void findViews() {
         commentList = (ListView) findViewById(R.id.comment_list);
         loadMore = (TextView) findViewById(R.id.load_more);
@@ -177,6 +183,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
             //int defaultAvatar = user.getSex().equals(Constant.SEX_MALE) ? R.drawable.avatar_default_m : R.drawable.avatar_default_f;
             String avatarUrl = user.getAvatar().getFileUrl(this);
             int defaultAvatar = user.getSex().equals(Constant.SEX_MALE) ? R.drawable.avatar_default_m : R.drawable.avatar_default_f;
+            Glide.clear(userAvatar);
             Glide.with(this)
                     .load(Uri.parse(avatarUrl))
                     .centerCrop()
@@ -197,6 +204,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
             postPics.setVisibility(View.VISIBLE);
             String picUrl = post.getContentfigureurl().getFileUrl(this) == null ?
                     "" : post.getContentfigureurl().getFileUrl(this);
+            Glide.clear(pic1);
             Glide.with(this)
                     .load(Uri.parse(picUrl))
                     .centerCrop()
@@ -226,6 +234,18 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
 
     }
 
+    /**
+     * 判断用户是否登录
+     *
+     * @return
+     */
+    private boolean isLogin() {
+        BmobUser user = BmobUser.getCurrentUser(mContext, User.class);
+        if (user != null) {
+            return true;
+        }
+        return false;
+    }
 
     @Override
     public void onClick(View v) {
@@ -262,8 +282,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     private void onClickUserLogo() {
         // TODO Auto-generated method stub
         //跳转到个人信息界面
-        User currentUser = BmobUser.getCurrentUser(this, User.class);
-        if (currentUser != null) {//已登录
+        if (isLogin()) {//已登录
             Intent intent = new Intent();
             intent.setClass(MyApplication.getMyApplication().getTopActivity(), PersonalHomeActivity.class);
             mContext.startActivity(intent);
@@ -282,19 +301,19 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
 
     private void onClickCommit() {
         // TODO Auto-generated method stub
-        User currentUser = BmobUser.getCurrentUser(this, User.class);
-        if (currentUser != null) {//已登录
+        if (isLogin()) {//已登录
             commentEdit = commentContent.getText().toString().trim();
             if (TextUtils.isEmpty(commentEdit)) {
                 ToastUtils.showToast(CommentActivity.this, "评论内容不能为空", Toast.LENGTH_SHORT);
                 return;
             }
             //comment now
+            User currentUser = BmobUser.getCurrentUser(this, User.class);
             publishComment(currentUser, commentEdit);
         } else {//未登录
             ToastUtils.showToast(CommentActivity.this, "发表评论前请先登录", Toast.LENGTH_SHORT);
             Intent intent = new Intent();
-            intent.setClass(this, LoginActivity.class);
+            intent.setClass(CommentActivity.this, LoginActivity.class);
             startActivityForResult(intent, Constant.PUBLISH_COMMENT);
         }
 
@@ -359,7 +378,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     private void onClickFav(View v) {
         // TODO Auto-generated method stub
         final User user = BmobUser.getCurrentUser(this, User.class);
-        if (user != null && user.getSessionToken() != null) {
+        if (isLogin() && user != null && user.getSessionToken() != null) {
             final BmobRelation favRelation = new BmobRelation();
             if (!post.getMyFav()) {
                 ((ImageView) v).setImageResource(R.drawable.ic_favorite);
@@ -439,17 +458,17 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         } else {
             //前往登录注册界面
             ToastUtils.showToast(CommentActivity.this, "收藏前请先登录", Toast.LENGTH_SHORT);
-            Intent intent = new Intent(this, LoginActivity.class);
+            Intent intent = new Intent(CommentActivity.this, LoginActivity.class);
             this.startActivity(intent);
         }
     }
 
 
     private void onClickLove() {
-        if (MyApplication.getMyApplication().getCurrentUser() == null) {
+        if (!isLogin()) {
             ToastUtils.showToast(this, "请先登录", Toast.LENGTH_SHORT);
-            Intent loginIntent = new Intent(this, LoginActivity.class);
-            this.startActivity(loginIntent);
+            Intent loginIntent = new Intent(CommentActivity.this, LoginActivity.class);
+            startActivity(loginIntent);
             return;
         }
 
@@ -470,6 +489,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                     //DatabaseUtil.getInstance(context).insertFav(post);
                     LogUtils.i(TAG, post.getLove());
                 }
+
                 @Override
                 public void onFailure(int i, String s) {
                     post.setMyLove(true);
@@ -568,7 +588,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
             case R.id.home:
-                super.onBackPressed();
+                onBackPressed();
                 return true;
         }
 
@@ -597,45 +617,6 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                 + (listView.getDividerHeight() * (listAdapter.getCount() - 1))
                 + 15;
         listView.setLayoutParams(params);
-    }
-
-
-    public static int[] getScreenSize() {
-        int[] screens;
-        // if (Constants.screenWidth > 0) {
-        // return screens;
-        // }
-        DisplayMetrics dm = MyApplication.getMyApplication().getResources().getDisplayMetrics();
-        screens = new int[]{dm.widthPixels, dm.heightPixels};
-        return screens;
-    }
-
-    public static float[] getBitmapConfiguration(Bitmap bitmap, ImageView imageView, float screenRadio) {
-        int screenWidth = getScreenSize()[0];
-        float rawWidth = 0;
-        float rawHeight = 0;
-        float width = 0;
-        float height = 0;
-        if (bitmap == null) {
-            // rawWidth = sourceWidth;
-            // rawHeight = sourceHeigth;
-            width = (float) (screenWidth / screenRadio);
-            height = (float) width;
-            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-        } else {
-            rawWidth = bitmap.getWidth();
-            rawHeight = bitmap.getHeight();
-            if (rawHeight > 10 * rawWidth) {
-                imageView.setScaleType(ImageView.ScaleType.CENTER);
-            } else {
-                imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-            }
-            float radio = rawHeight / rawWidth;
-
-            width = (float) (screenWidth / screenRadio);
-            height = (float) (radio * width);
-        }
-        return new float[]{width, height};
     }
 
 
