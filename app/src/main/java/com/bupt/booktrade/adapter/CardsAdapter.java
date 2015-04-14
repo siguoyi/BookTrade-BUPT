@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -33,15 +32,16 @@ import java.util.List;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobRelation;
 import cn.bmob.v3.listener.UpdateListener;
+import zrc.widget.ZrcListView;
 
 public class CardsAdapter extends BaseAdapter {
 
     private final String TAG = "CardsAdapter";
-    private final OnItemClickListener itemClickListener;
+    private final ZrcListView.OnItemClickListener itemClickListener;
     private final Context context;
     private List<Post> dataList;
 
-    public CardsAdapter(Context context, List<Post> dataList, OnItemClickListener itemClickListener) {
+    public CardsAdapter(Context context, List<Post> dataList, ZrcListView.OnItemClickListener itemClickListener) {
         this.context = context;
         this.dataList = dataList;
         this.itemClickListener = itemClickListener;

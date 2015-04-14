@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +18,6 @@ import com.bupt.booktrade.MyApplication;
 import com.bupt.booktrade.R;
 import com.bupt.booktrade.activity.CommentActivity;
 import com.bupt.booktrade.adapter.CardsAdapter;
-import com.bupt.booktrade.db.DatabaseUtil;
 import com.bupt.booktrade.entity.Post;
 import com.bupt.booktrade.utils.Constant;
 import com.bupt.booktrade.utils.LogUtils;
@@ -44,6 +42,7 @@ public class PostsListFragment extends BaseFragment {
     private TextView postsLoading;
     private int pageNum;
     private int currentIndex;
+    public boolean fetchResult = false;
     private String lastItemTime;
     private Handler handler;
     private ArrayList<Post> mListItems;
@@ -55,7 +54,7 @@ public class PostsListFragment extends BaseFragment {
         REFRESH, LOAD_MORE
     }
 
-    private RefreshType mRefreshType = RefreshType.LOAD_MORE;
+    public RefreshType mRefreshType = RefreshType.LOAD_MORE;
 
     /*
     public static BaseFragment newInstance(int index) {
@@ -114,15 +113,16 @@ public class PostsListFragment extends BaseFragment {
             footer.setCircleColor(0xff33bbee);
             postsList.setFootable(footer);
 
-            // 设置列表项出现动画（可选）
-            postsList.setItemAnimForTopIn(R.anim.topitem_in);
-            postsList.setItemAnimForBottomIn(R.anim.bottomitem_in);
+//            // 设置列表项出现动画（可选）
+//            postsList.setItemAnimForTopIn(R.anim.topitem_in);
+//            postsList.setItemAnimForBottomIn(R.anim.bottomitem_in);
 
             // 下拉刷新事件回调（可选）
             postsList.setOnRefreshStartListener(new ZrcListView.OnStartListener() {
                 @Override
                 public void onStart() {
-                    refresh();
+                    mRefreshType = RefreshType.REFRESH;
+                    new FetchDataTask().execute();
                 }
             });
 
@@ -130,20 +130,19 @@ public class PostsListFragment extends BaseFragment {
             postsList.setOnLoadMoreStartListener(new ZrcListView.OnStartListener() {
                 @Override
                 public void onStart() {
+                    mRefreshType = RefreshType.REFRESH;
                     // loadMore();
                 }
             });
-
             setupList();
-            if (mListItems.size() == 0) {
-                postsList.refresh(); // 主动下拉刷新
-            }
         }
         ViewGroup parent = (ViewGroup) rootView.getParent();
         if (parent != null) {
             parent.removeView(rootView);
         }
-
+        //if (mListItems.size() == 0) {
+            postsList.refresh(); // 主动下拉刷新
+       // }
         return rootView;
     }
 
@@ -154,7 +153,16 @@ public class PostsListFragment extends BaseFragment {
     }
 
     private void setupList() {
-        mAdapter = new CardsAdapter(mContext, mListItems, new ListItemClickListener());
+        mAdapter = new CardsAdapter(mContext, mListItems, new ZrcListView.OnItemClickListener() {
+            @Override
+            public void onItemClick(ZrcListView parent, View view, int position, long id) {
+                LogUtils.i(TAG, position);
+                Intent intent = new Intent();
+                intent.setClass(getActivity(), CommentActivity.class);
+                intent.putExtra("data", mListItems.get(position));
+                startActivity(intent);
+            }
+        });
         postsList.setAdapter(mAdapter);
         postsList.refresh(); // 主动下拉刷新
     }
@@ -168,20 +176,20 @@ public class PostsListFragment extends BaseFragment {
         }, 2 * 1000);
     }
 
-    public void fetchData() {
+    public boolean fetchData() {
         BmobQuery<Post> query = new BmobQuery<>();
         query.order("-createdAt");
         query.setCachePolicy(BmobQuery.CachePolicy.CACHE_ELSE_NETWORK);
         query.setLimit(Constant.NUMBERS_PER_PAGE);
         BmobDate date = new BmobDate(new Date(System.currentTimeMillis()));
         query.addWhereLessThan("createdAt", date);
-        LogUtils.i(TAG, "SIZE:" + Constant.NUMBERS_PER_PAGE * pageNum);
+        //LogUtils.i(TAG, "SIZE:" + Constant.NUMBERS_PER_PAGE * pageNum);
         query.setSkip(Constant.NUMBERS_PER_PAGE * (pageNum++));
-        LogUtils.i(TAG, "SIZE:" + Constant.NUMBERS_PER_PAGE * pageNum);
+        //LogUtils.i(TAG, "SIZE:" + Constant.NUMBERS_PER_PAGE * pageNum);
         query.include("author");
         query.findObjects(mContext, new FindListener<Post>() {
             @Override
-            public void onSuccess(List<Post> list) {
+            public void onSuccess(final List<Post> list) {
                 // TODO Auto-generated method stub
                 LogUtils.i(TAG, "time:" + getCurrentTime());
                 LogUtils.i(TAG, "find success:" + list.size());
@@ -193,18 +201,19 @@ public class PostsListFragment extends BaseFragment {
                     if (list.size() < Constant.NUMBERS_PER_PAGE) {
                         LogUtils.i(TAG, "已加载完所有数据");
                     }
-                    if (MyApplication.getMyApplication().getCurrentUser() != null) {
-                        list = DatabaseUtil.getInstance(mContext).setFav(list);
-                    }
-                    postsLoading.setVisibility(View.GONE);
-                    mListItems.addAll(list);
-                    mAdapter.notifyDataSetChanged();
-                    postsList.setRefreshSuccess("加载成功"); // 通知加载成功
-                    postsList.startLoadMore(); // 开启LoadingMore功能
+                    if (MyApplication.getMyApplication().getCurrentUser() != null)
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                //list = DatabaseUtil.getInstance(mContext).setFav(list);
+                                mListItems.addAll(list);
+                            }
+                        }).start();
                 } else {
                     ToastUtils.showToast(mContext, "暂无更多数据", Toast.LENGTH_SHORT);
                     pageNum--;
                 }
+                fetchResult = true;
             }
 
             @Override
@@ -216,25 +225,37 @@ public class PostsListFragment extends BaseFragment {
             public void onError(int i, String s) {
                 // TODO Auto-generated method stub
                 LogUtils.i(TAG, "find failed:" + s);
-                //postsList.setRefreshFail("加载失败");
+                if (s.equals("find failed:No cache data.")) {
+                    postsList.setRefreshFail("暂无新内容");
+                }
                 pageNum--;
+                fetchResult = false;
             }
         });
+        return fetchResult;
     }
 
 
-    private class FetchDataTask extends AsyncTask<Void, Integer, Integer> {
+    private class FetchDataTask extends AsyncTask<Void, Integer, Boolean> {
 
         @Override
-        protected Integer doInBackground(Void... params) {
+        protected Boolean doInBackground(Void... params) {
             fetchData();
-            return null;
+            return fetchResult;
         }
 
         @Override
-        protected void onPostExecute(Integer integer) {
-            super.onPostExecute(integer);
+        protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
+            if (fetchResult) {
+                LogUtils.i(TAG, fetchResult + "");
+                postsLoading.setVisibility(View.GONE);
+                postsList.setRefreshSuccess("加载成功"); // 通知加载成功
+                postsList.startLoadMore(); // 开启LoadingMore功能
+            } else {
 
+                postsList.setRefreshFail("暂无新内容");
+            }
         }
 
         @Override
