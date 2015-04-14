@@ -6,16 +6,15 @@
 gradlew.bat
 *.iml
 /nforum-sdk
+/zrcListView
 ### Java template
 *.class
-
 
 ### Gradle template
 build/
 
 # Ignore Gradle GUI config
 gradle-app.setting
-
 
 ### Android template
 # Built application files
@@ -24,7 +23,6 @@ gradle-app.setting
 
 # Files for the Dalvik VM
 *.dex
-
 
 # Generated files
 bin/

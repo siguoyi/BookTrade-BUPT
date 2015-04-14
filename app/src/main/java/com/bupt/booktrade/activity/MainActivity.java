@@ -214,8 +214,8 @@ public class MainActivity extends BaseActivity {
                     Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
                     startActivityForResult(loginIntent, REQUEST_LOGIN);
                 } else {
-                    Intent personalPageIntent = new Intent(MainActivity.this, PersonalHomeActivity.class);
-                    startActivity(personalPageIntent);
+                    drawerPosition = SETTING_FRAGMENT;
+                    displayView(drawerPosition);
                 }
             }
         });
@@ -225,7 +225,7 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onResume() {
-        LogUtils.d(TAG, "onResume()");
+        LogUtils.d(TAG, "onResume()" + drawerPosition);
         super.onResume();
         mBackPressed = 0L;
         drawerPosition = POSTS_LIST_FRAGMENT;
@@ -352,6 +352,7 @@ public class MainActivity extends BaseActivity {
                     startActivityForResult(loginIntent, REQUEST_LOGIN);
                     return;
                 } else {
+                    drawerPosition = SETTING_FRAGMENT;
                     fragment = settingFragment;
                 }
                 break;

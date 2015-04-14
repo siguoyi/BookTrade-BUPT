@@ -54,8 +54,8 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
     private TextView settingNickname;
     private TextView cacheSize;
     private User user;
-    private final int REQUEST_CODE_ALBUM = 0;
-
+    private static final int REQUEST_CODE_ALBUM = 1;
+    private static final int REQUEST_LOGIN = 0;
     private View rootView;
     private ImageView drawerAvatar;
     private TextView drawerUserName;
@@ -79,7 +79,6 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
             settingAvatar = (ImageView) rootView.findViewById(R.id.setting_user_avatar);
             setNicknameLayout = (RelativeLayout) rootView.findViewById(R.id.setting_user_nickname_layout);
             settingNickname = (TextView) rootView.findViewById(R.id.setting_user_nickname);
-            cacheSize = (TextView) rootView.findViewById(R.id.cache_size);
             clearCacheLayout = (RelativeLayout) rootView.findViewById(R.id.setting_clear_cache_layout);
             checkUpdateLayout = (RelativeLayout) rootView.findViewById(R.id.setting_update_layout);
 
@@ -94,6 +93,8 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
         if (parent != null) {
             parent.removeView(rootView);
         }
+        cacheSize = (TextView) rootView.findViewById(R.id.cache_size);
+        cacheSize.setText(String.valueOf(CacheUtils.getCacheSize()) + "KB");
         return rootView;
     }
 
@@ -135,8 +136,6 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
         } else {
             logout.setText("登录");
         }
-
-        cacheSize.setText(String.valueOf(CacheUtils.getCacheSize()) + "KB");
     }
 
     private void setLogoutUserInfo() {
@@ -296,7 +295,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
     private void skipToLogin() {
         ToastUtils.showToast(mContext, "请先登录", Toast.LENGTH_SHORT);
         Intent loginIntent = new Intent(mContext, LoginActivity.class);
-        startActivity(loginIntent);
+        startActivityForResult(loginIntent, REQUEST_LOGIN);
     }
 
     private void updateSex(int sex) {
@@ -317,7 +316,6 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
                 @Override
                 public void onFailure(int arg0, String arg1) {
                     // TODO Auto-generated method stub
-
                     LogUtils.i(TAG, arg1);
                 }
             });

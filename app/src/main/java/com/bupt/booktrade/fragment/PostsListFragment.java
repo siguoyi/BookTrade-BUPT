@@ -5,15 +5,13 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,21 +33,24 @@ import java.util.List;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.datatype.BmobDate;
 import cn.bmob.v3.listener.FindListener;
+import zrc.widget.SimpleFooter;
+import zrc.widget.SimpleHeader;
+import zrc.widget.ZrcListView;
 
-public class PostsListFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
+public class PostsListFragment extends BaseFragment {
 
     private String TAG;
-    private ListView postsList;
+    private ZrcListView postsList;
     private TextView postsLoading;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
     private int pageNum;
     private int currentIndex;
     private String lastItemTime;
-
+    private Handler handler;
     private ArrayList<Post> mListItems;
     private CardsAdapter mAdapter;
 
     private View rootView;
+
     public enum RefreshType {
         REFRESH, LOAD_MORE
     }
@@ -87,9 +88,7 @@ public class PostsListFragment extends BaseFragment implements SwipeRefreshLayou
         pageNum = 0;
         lastItemTime = getCurrentTime();
         LogUtils.i(TAG, "current time:" + lastItemTime);
-        if (mListItems.size() == 0) {
-            new FetchDataTask().execute();
-        }
+
         //currentIndex = getArguments().getInt("page");
         LogUtils.i(TAG, "onCreate");
     }
@@ -97,18 +96,48 @@ public class PostsListFragment extends BaseFragment implements SwipeRefreshLayou
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         LogUtils.i(TAG, "onCreateView");
+        handler = new Handler();
         if (rootView == null) {
             rootView = inflater.inflate(R.layout.fragment_posts_list, container, false);
             LogUtils.i(TAG, "onCreateView");
-            postsList = (ListView) rootView.findViewById(R.id.cards_list);
             postsLoading = (TextView) rootView.findViewById(R.id.posts_loading);
 
-            mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_container);
-            mSwipeRefreshLayout.setColorSchemeResources(R.color.google_red, R.color.google_blue, R.color.google_green, R.color.google_yellow);
-            mSwipeRefreshLayout.setDistanceToTriggerSync(400);
-            mSwipeRefreshLayout.setOnRefreshListener(this);
+            postsList = (ZrcListView) rootView.findViewById(R.id.cards_list);
+            // 设置下拉刷新的样式（可选，但如果没有Header则无法下拉刷新）
+            SimpleHeader header = new SimpleHeader(mContext);
+            header.setTextColor(0xff0066aa);
+            header.setCircleColor(0xff33bbee);
+            postsList.setHeadable(header);
+
+            // 设置加载更多的样式（可选）
+            SimpleFooter footer = new SimpleFooter(mContext);
+            footer.setCircleColor(0xff33bbee);
+            postsList.setFootable(footer);
+
+            // 设置列表项出现动画（可选）
+            postsList.setItemAnimForTopIn(R.anim.topitem_in);
+            postsList.setItemAnimForBottomIn(R.anim.bottomitem_in);
+
+            // 下拉刷新事件回调（可选）
+            postsList.setOnRefreshStartListener(new ZrcListView.OnStartListener() {
+                @Override
+                public void onStart() {
+                    refresh();
+                }
+            });
+
+            // 加载更多事件回调（可选）
+            postsList.setOnLoadMoreStartListener(new ZrcListView.OnStartListener() {
+                @Override
+                public void onStart() {
+                    // loadMore();
+                }
+            });
 
             setupList();
+            if (mListItems.size() == 0) {
+                postsList.refresh(); // 主动下拉刷新
+            }
         }
         ViewGroup parent = (ViewGroup) rootView.getParent();
         if (parent != null) {
@@ -127,29 +156,17 @@ public class PostsListFragment extends BaseFragment implements SwipeRefreshLayou
     private void setupList() {
         mAdapter = new CardsAdapter(mContext, mListItems, new ListItemClickListener());
         postsList.setAdapter(mAdapter);
-        postsList.setOnItemClickListener(new ListItemClickListener());
+        postsList.refresh(); // 主动下拉刷新
     }
 
-    @Override
-    public void onRefresh() {
-
-        // TODO Auto-generated method stub
-        mRefreshType = RefreshType.REFRESH;
-
-        new FetchDataTask().execute();
-
-        new Handler().postDelayed(new Runnable() {
+    private void refresh() {
+        handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (mSwipeRefreshLayout.isRefreshing()) {
-                    mSwipeRefreshLayout.setRefreshing(false);
-                }
+               fetchData();
             }
-        }, 5000);
-
-
+        }, 2 * 1000);
     }
-
 
     public void fetchData() {
         BmobQuery<Post> query = new BmobQuery<>();
@@ -179,8 +196,11 @@ public class PostsListFragment extends BaseFragment implements SwipeRefreshLayou
                     if (MyApplication.getMyApplication().getCurrentUser() != null) {
                         list = DatabaseUtil.getInstance(mContext).setFav(list);
                     }
+                    postsLoading.setVisibility(View.GONE);
                     mListItems.addAll(list);
-
+                    mAdapter.notifyDataSetChanged();
+                    postsList.setRefreshSuccess("加载成功"); // 通知加载成功
+                    postsList.startLoadMore(); // 开启LoadingMore功能
                 } else {
                     ToastUtils.showToast(mContext, "暂无更多数据", Toast.LENGTH_SHORT);
                     pageNum--;
@@ -189,8 +209,6 @@ public class PostsListFragment extends BaseFragment implements SwipeRefreshLayou
 
             @Override
             public void onFinish() {
-                postsLoading.setVisibility(View.GONE);
-                mAdapter.notifyDataSetChanged();
                 super.onFinish();
             }
 
@@ -198,11 +216,11 @@ public class PostsListFragment extends BaseFragment implements SwipeRefreshLayou
             public void onError(int i, String s) {
                 // TODO Auto-generated method stub
                 LogUtils.i(TAG, "find failed:" + s);
+                //postsList.setRefreshFail("加载失败");
                 pageNum--;
             }
         });
     }
-
 
 
     private class FetchDataTask extends AsyncTask<Void, Integer, Integer> {
@@ -216,17 +234,12 @@ public class PostsListFragment extends BaseFragment implements SwipeRefreshLayou
         @Override
         protected void onPostExecute(Integer integer) {
             super.onPostExecute(integer);
-            if (mSwipeRefreshLayout.isRefreshing()) {
-                mSwipeRefreshLayout.setRefreshing(false);
-            }
+
         }
 
         @Override
         protected void onCancelled() {
             super.onCancelled();
-            if (mSwipeRefreshLayout.isRefreshing()) {
-                mSwipeRefreshLayout.setRefreshing(false);
-            }
         }
     }
 
@@ -240,5 +253,4 @@ public class PostsListFragment extends BaseFragment implements SwipeRefreshLayou
             startActivity(intent);
         }
     }
-
 }

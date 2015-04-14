@@ -3,7 +3,6 @@ package com.bupt.booktrade.utils;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Environment;
-import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,6 +36,7 @@ public class CacheUtils {
             String cacheDirPath = "/data/data/" + context.getPackageName() + "/files/";
             appCacheDir = new File(cacheDirPath);
         }
+        filesInCache.add(appCacheDir);
         return appCacheDir;
     }
 
@@ -56,6 +56,7 @@ public class CacheUtils {
             appCacheDir = new File(cacheDirPath);
         }
         filesInCache.add(appCacheDir);
+        //LogUtils.i(TAG, appCacheDir.getAbsolutePath());
         return appCacheDir;
     }
 
@@ -66,15 +67,16 @@ public class CacheUtils {
         File appCacheDir = new File(appCacheDir2, dirName);
         if (!appCacheDir.exists()) {
             if (!appCacheDir.mkdirs()) {
-                Log.w(TAG, "Unable to create external cache directory");
+                LogUtils.w(TAG, "Unable to create external cache directory");
                 return null;
             }
             try {
                 new File(appCacheDir, ".nomedia").createNewFile();
             } catch (IOException e) {
-                Log.i(TAG, "Can't create \".nomedia\" file in application external cache directory");
+                LogUtils.i(TAG, "Can't create \".nomedia\" file in application external cache directory");
             }
         }
+        filesInCache.add(appCacheDir2);
         return appCacheDir;
     }
 
@@ -102,22 +104,26 @@ public class CacheUtils {
 
     /**
      * in KB
+     *
      * @return KB
      */
     public static long getCacheSize() {
-        int sum = 0;
+        long sum = 0;
         if (filesInCache == null) {
             return 0;
         } else {
             for (File file : filesInCache) {
+
                 if (!file.exists()) continue;
                 if (file.isFile()) {
                     sum += file.length();
+                    //LogUtils.i(TAG, file.getAbsolutePath() + "isFile");
                 } else if (file.isDirectory()) {
                     File[] files = file.listFiles();
                     for (int i = 0; i < files.length; i++) {
                         if (!files[i].exists()) continue;
                         if (files[i].isFile()) {
+                            //LogUtils.i(TAG, file.getAbsolutePath() + "isDir");
                             sum += file.length();
                         }
                     }

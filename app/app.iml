@@ -100,6 +100,7 @@
     <orderEntry type="library" exported="" name="glide-3.5.2" level="project" />
     <orderEntry type="library" exported="" name="BmobSDK_V3.3.5_0408" level="project" />
     <orderEntry type="module" module-name="nforum-sdk" exported="" />
+    <orderEntry type="module" module-name="zrcListView" exported="" />
   </component>
 </module>
 

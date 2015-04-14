@@ -347,7 +347,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                     @Override
                     public void onSuccess() {
                         // TODO Auto-generated method stub
-                        LogUtils.i(TAG, "更新评论成功");
+                        //LogUtils.i(TAG, "更新评论成功");
 //						fetchData();
                     }
 
@@ -539,7 +539,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                 LogUtils.i(TAG, "get comment success!" + data.size());
                 if (data.size() != 0 && data.get(data.size() - 1) != null) {
                     if (data.size() < Constant.NUMBERS_PER_PAGE) {
-                        ToastUtils.showToast(mContext, "已加载完所有评论", Toast.LENGTH_SHORT);
+                        //ToastUtils.showToast(mContext, "已加载完所有评论", Toast.LENGTH_SHORT);
                         loadMore.setText("暂无更多评论");
                     }
                     mAdapter.getDataList().clear();

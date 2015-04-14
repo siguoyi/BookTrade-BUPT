@@ -17,7 +17,7 @@ public class UserProxy {
 	public UserProxy(Context context){
 		this.mContext = context;
 	}
-	
+
 	public void signUp(String userName,String password,String email){
 		User user = new User();
 		user.setUsername(userName);

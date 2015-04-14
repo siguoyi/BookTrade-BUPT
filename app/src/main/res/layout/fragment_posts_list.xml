@@ -12,32 +12,28 @@
         android:text="正在加载..."
         android:textSize="16sp" />
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_container"
+
+    <zrc.widget.ZrcListView
+        android:id="@+id/cards_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <ListView
-            android:id="@+id/cards_list"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="3dp"
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
+        android:scrollbarStyle="outsideOverlay"
+        tools:listitem="@layout/list_item_card">
+    </zrc.widget.ZrcListView>
+    <!--
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clipToPadding="false"
-            android:divider="@android:color/transparent"
-            android:dividerHeight="3dp"
-            android:paddingLeft="2dp"
-            android:paddingRight="2dp"
-            android:scrollbarStyle="outsideOverlay"
-            tools:listitem="@layout/list_item_card" />
-        <!--
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center">
+            android:layout_height="match_parent"
+            android:gravity="center">
 
-                <ProgressBar
-                    android:id="@+id/progressbar_circular_posts"
-                    style="@style/ProgressBar.Horizontal" />
-            </RelativeLayout>
-        -->
-    </android.support.v4.widget.SwipeRefreshLayout>
+            <ProgressBar
+                android:id="@+id/progressbar_circular_posts"
+                style="@style/ProgressBar.Horizontal" />
+        </RelativeLayout>
+    -->
 </FrameLayout>
