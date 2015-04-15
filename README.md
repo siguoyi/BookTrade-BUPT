@@ -1,8 +1,8 @@
 # BookTrade-BUPT
 ![icon](/screenshots/ic_launcher.png) 
 
-An Android app for BUPT students to post information of their used books.（in developing）
-It's still a demo now.
+- An Android app for BUPT students to post information of their used books.（in developing）
+- It's still a demo now.
 
 ## Screenshots ##
 ![icon](/screenshots/1.png) ![icon](/screenshots/2.png) 
