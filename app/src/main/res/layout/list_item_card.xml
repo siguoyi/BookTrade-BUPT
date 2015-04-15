@@ -43,7 +43,8 @@
         android:layout_height="32dp"
         android:layout_alignBottom="@+id/user_avatar_post"
         android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/user_avatar_post">
+        android:layout_alignTop="@+id/user_avatar_post"
+        android:descendantFocusability="beforeDescendants">
 
         <ImageView
             android:id="@+id/favorite_post"
@@ -51,7 +52,9 @@
             android:layout_height="16dp"
             android:layout_centerInParent="true"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_favorite_outline" />
+            android:src="@drawable/ic_favorite_outline"
+            android:clickable="false"
+            android:focusableInTouchMode="false"/>
     </RelativeLayout>
 
 
@@ -100,7 +103,8 @@
             android:layout_weight="1"
             android:background="@drawable/selectable_background"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:descendantFocusability="beforeDescendants">
 
             <ImageView
                 android:layout_width="16dp"
@@ -135,7 +139,8 @@
             android:layout_weight="1"
             android:background="@drawable/selectable_background"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:descendantFocusability="beforeDescendants">
 
             <ImageView
                 android:layout_width="16dp"
@@ -170,7 +175,8 @@
             android:layout_weight="1"
             android:background="@drawable/selectable_background"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:descendantFocusability="beforeDescendants">
 
             <ImageView
                 android:id="@+id/post_thumb"

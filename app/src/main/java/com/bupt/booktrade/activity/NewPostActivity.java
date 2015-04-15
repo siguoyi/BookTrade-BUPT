@@ -49,13 +49,10 @@ public class NewPostActivity extends BaseActivity implements View.OnClickListene
     private LinearLayout openLayout;
     private LinearLayout takeLayout;
 
-    private ImageView albumPic;
-    private ImageView takePic;
     private ImageView pic1;
     private ImageView pic2;
     private ImageView pic3;
-    private String targetUrl = null;
-
+    private String targetUrl;
     private String mCurrentPhotoPath;
 
     @Override
@@ -71,9 +68,6 @@ public class NewPostActivity extends BaseActivity implements View.OnClickListene
         content = (EditText) findViewById(R.id.new_post_content);
         openLayout = (LinearLayout) findViewById(R.id.open_layout);
         takeLayout = (LinearLayout) findViewById(R.id.take_layout);
-
-        albumPic = (ImageView) findViewById(R.id.open_pic);
-        takePic = (ImageView) findViewById(R.id.take_pic);
 
         pic1 = (ImageView) findViewById(R.id.pic1);
         pic2 = (ImageView) findViewById(R.id.pic2);
@@ -174,7 +168,6 @@ public class NewPostActivity extends BaseActivity implements View.OnClickListene
                                 .centerCrop()
                                 .diskCacheStrategy(DiskCacheStrategy.RESULT)
                                 .into(pic1);
-                        //takeLayout.setVisibility(View.GONE);
                     }
                     break;
                 case REQUEST_CODE_CAMERA:

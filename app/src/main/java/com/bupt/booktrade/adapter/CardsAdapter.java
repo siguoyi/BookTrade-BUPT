@@ -37,14 +37,12 @@ import zrc.widget.ZrcListView;
 public class CardsAdapter extends BaseAdapter {
 
     private final String TAG = "CardsAdapter";
-    private final ZrcListView.OnItemClickListener itemClickListener;
     private final Context context;
     private List<Post> dataList;
 
-    public CardsAdapter(Context context, List<Post> dataList, ZrcListView.OnItemClickListener itemClickListener) {
+    public CardsAdapter(Context context, List<Post> dataList) {
         this.context = context;
         this.dataList = dataList;
-        this.itemClickListener = itemClickListener;
     }
 
     @Override

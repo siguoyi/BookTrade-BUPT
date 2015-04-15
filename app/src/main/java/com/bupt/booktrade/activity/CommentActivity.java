@@ -548,7 +548,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                     setListViewHeightBasedOnChildren(commentList);
                     LogUtils.i(TAG, "refresh");
                 } else {
-                    ToastUtils.showToast(mContext, "暂无更多评论", Toast.LENGTH_SHORT);
+                    //ToastUtils.showToast(mContext, "暂无更多评论", Toast.LENGTH_SHORT);
                     loadMore.setText("暂无更多评论");
                     pageNum--;
                 }
