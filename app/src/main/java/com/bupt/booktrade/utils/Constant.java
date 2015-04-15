@@ -5,7 +5,7 @@ package com.bupt.booktrade.utils;
  */
 public class Constant {
 
-    public static final String BMOB_APP_ID = "your Bmob Application ID";//your Bmob Application ID
+    public static final String BMOB_APP_ID = "27ec576833c87b1a999df3fcea9b2044";//replace it with your Bmob Application ID
 
 
     public static final int PUBLISH_COMMENT = 1;
