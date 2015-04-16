@@ -9,6 +9,9 @@
 ![icon](/screenshots/3.png) ![icon](/screenshots/4.png)
 ![icon](/screenshots/5.png) ![icon](/screenshots/6.png)  
 
+## Demo ##
+[Download apk](/release/app-debug.apk)
+
 ## Use ##
 
 1. Apply for an `Application ID` in [Bmob](http://www.bmob.cn/)
